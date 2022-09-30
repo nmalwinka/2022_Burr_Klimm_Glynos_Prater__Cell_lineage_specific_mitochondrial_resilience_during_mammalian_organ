@@ -114,10 +114,29 @@ Counts extracted with STAR were used to perform differential gene analysis in R 
 ### Proliferation assays
 
 Two independently conducted proliferation experiments were merged, and means for each clone calculated.
+For the late time point (60h), Pearson correlation was used to assess correlation between heteroplasmy and mean confluency.
 
-**ADD:   Statistics XXX**
+| siRNA|t_test pval	| t_test 60h padj (FDR) |	t_test 60h padj (bonferroni) |
+|----- |----------  | ------------------    | --------------               |
+|Mock	 |  0.204195132 |	0.272260176	| 1 |
+|NT	   |  0.376859211	| 0.376859211	| 1 |
+|Gapdh |  0.158374855	| 0.272260176	| 1 |
+|E2f3	 |  0.202931742	| 0.272260176	| 1 |
+|Taf1	 |  0.000365616	| 0.002924925	| 0.002924925 |
+|Klf12 |  0.33204861	| 0.376859211	| 1 |
+|Maz	 |  0.006081063	| 0.02432425	| 0.0486485 |
+|Bclaf1|	0.176320192	| 0.272260176	| 1 |
 
-
+| siRNA|AUC pval	| AUC 60h padj (FDR) |	AUC 60h padj (bonferroni) |
+|----- |----------  | ------------------    | --------------               |
+| Mock	 | 0.994117853	|0.994117853	|1 |
+| NT	   | 0.441088966	|0.594961414	|1 |
+| Gapdh	 | 0.779878752	|0.891290003	|1 |
+| E2f3	 | 0.146853883	|0.482486722	|1 |
+| Taf1	 | 0.008167221	|0.065337767	|0.065337767 |
+| Klf12	 | 0.401073059	|0.594961414	|1 |
+| Maz	   | 0.180932521	|0.482486722	|1 |
+| Bclaf1 | 0.446221061	|0.594961414	|1 |
 
 
 
