@@ -114,7 +114,7 @@ Counts extracted with STAR were used to perform differential gene analysis in R 
 ### Proliferation assays
 
 Two independently conducted proliferation experiments were merged, and means for each clone calculated.
-For the late time point (60h), Pearson correlation was used to assess correlation between heteroplasmy and mean confluency.
+For the late time point (60h), Pearson correlation was used to assess correlation between heteroplasmy and mean confluency. Two statistical methods were used to assess change in confluency due to heteroplasmy levels: t-test at the late time point (60h) and area under curves (AUC). Statistical results are shown in tables below.
 
 | siRNA|t_test pval	| t_test 60h padj (FDR) |	t_test 60h padj (bonferroni) |
 |----- |----------  | ------------------    | --------------               |
