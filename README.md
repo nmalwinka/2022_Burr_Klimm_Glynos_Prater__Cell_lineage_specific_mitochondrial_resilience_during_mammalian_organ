@@ -23,12 +23,23 @@
 
 Burr, S., Klimm, F., Glynos, A., Prater, M., Sendon, P., Nash, P., Powell, C., Simard, M., Bonekamp, N., Charl, J., Diaz, H., Bozhilova, L., Nie, N., Zhang, H., Frison, M., Falkenberg, M., Minczuk, M., Jones, N., Stewart, J., Chinnery, P. (2022) Cell lineage specific mitochondrial resilience during mammalian organogenesis. [[Nature]](LINK-to-page) [[DOI]](DOI-address-html)
 
+# Software
+
+| Reference             | Software        | DOI    |
+|.----------------------|.----------------|.-------|
+|Hao et al., 2021       | Seurat v4    | https://doi.org/10.1016/j.cell.2021.04.048 |
+|Dobin et al., 2013     | STAR aligner | https://doi.org/10.1093/bioinformatics/bts635 |
+|Aibar et al., 2017     | SCENIC       | https://doi.org/10.1038/nmeth.4463 |
+|Korsunsky et al, 2019  | Harmony      | https://doi.org/10.1038/s41592-019-0619-0 |
+|||  |
+
+
 ------------------------------------------------
 # Methods
 
-## Quality control and pre-processing
+### Quality control and pre-processing of scRNA-seq
 
-Raw FASTQ files from 10x sequencing were demultiplexed and aligned in a two-pass alignment to the Mus musculus reference genome (version Mus_musculus.GRCm38.102) using STARsolo (version 2.7.3a) (Dobin et al., 2013), with default settings set according to the 10x chromium chemistry used. For the expression matrix analysis, we used Seurat (version v.4.0.5) (REFERENCE) and perform standard pre-processing steps: removing cells with less than 200 genes, removing genes that have been detected in less than 3 cells, normalisation to 10,000 reads per cell, and log-transformation. After this quality control, we have 11020 cells in total.
+Raw FASTQ files from 10x sequencing were demultiplexed and aligned in a two-pass alignment to the Mus musculus reference genome (version Mus_musculus.GRCm38.102) using STARsolo (version 2.7.3a) (Dobin et al., 2013), with default settings set according to the 10x chromium chemistry used. For the expression matrix analysis, we used Seurat (version v.4.0.5) (Hao et al., 2021) and perform standard pre-processing steps: removing cells with less than 200 genes, removing genes that have been detected in less than 3 cells, normalisation to 10,000 reads per cell, and log-transformation. After this quality control, we have 11020 cells in total.
 
 Table 1: Number of cells after alignment and pre-processing in both batches. Batch A consists of Wildtype and the 5024 mutation. Batch B consists of Wildtype, 5019, and 5014 mutation. In total 11020 cells pass the quality control filtering.
 
@@ -37,15 +48,77 @@ Table 1: Number of cells after alignment and pre-processing in both batches. Bat
 | 2174	| 2456	| 2750 |	1649	|  1991 |
 
 
-## Clustering and cell-type annotation
+### Clustering and cell-type annotation of the scRNA-seq
 
-To cluster the cells with Seurat, we first construct a k-nearest-neighbour graph with the default k=15 and, second, perform a modularity maximisation with resolution parameter 10. For each cluster, we then identify differentially expressed genes (DEGs) with a Wilcoxon rank-sum tests, for which we choose a significance threshold of 0.05 for and use the Benjamini–Hochberg procedure to obtain multiple-testing corrected p-values. To annotate each cluster with a cell type, we compare the obtained top 100 DEGs with the top 100 marker genes as identified by (Ibarra-Soria et al., 2018). Specifically, for each cluster, we compute the Jaccard index between the DEGs and each of the twenty cell types and then assign the cell type with the highest Jaccard index to this cluster. To identify DEGs between the different mice, we use a Wilcoxon rank-sum tests with a significance threshold of 0.05 for and use the Benjamini–Hochberg procedure to obtain multiple-testing corrected p-values.
+To cluster the cells with Scanpy, we first construct a k-nearest-neighbour graph with the default k=15 and, second, perform a modularity maximisation with resolution parameter 10. For each cluster, we then identify differentially expressed genes (DEGs) with a Wilcoxon rank-sum tests, for which we choose a significance threshold of 0.05 for and use the Benjamini–Hochberg procedure to obtain multiple-testing corrected p-values. To annotate each cluster with a cell type, we compare the obtained top 100 DEGs with the top 100 marker genes as identified by (Ibarra-Soria et al., 2018). Specifically, for each cluster, we compute the Jaccard index between the DEGs and each of the twenty cell types and then assign the cell type with the highest Jaccard index to this cluster.
 
-For data processing for identifying marker genes, SCENIC and data visualisation on UMAP, raw counts were processed using Seurat (v.4.0.5) and SCTransform (sctransform R package, v.0.3.2) with regressing out batch effect, followed by Harmony (v.0.1.0). SCENIC analysis was performed on the integrated dataset using SCENIC R package (v.1.2.4) and python Arboreto module (v.0.1.5). Cell-type-specific, and cell-type-and-genotype-specific marker genes were calculated with Seurat function "FindMarkers", using a Wilcoxon Rank Sum test.
+For data processing for identifying marker genes, SCENIC and data visualisation on UMAP, raw counts were processed using Seurat (v.4.0.5) and SCTransform (sctransform R package, v.0.3.2) with regressing out batch effect, followed by Harmony (v.0.1.0). SCENIC analysis (Aibar et al., 2017) was performed on the integrated dataset using SCENIC R package (v.1.2.4) and python Arboreto module (v.0.1.5). Cell-type-specific, and cell-type-and-genotype-specific marker genes were calculated with Seurat function "FindMarkers", using a Wilcoxon rank-sum test with a significance threshold of 0.05 and use of the Benjamini–Hochberg procedure to obtain multiple-testing corrected p-values.
 
 Enrichment with buffering genes from (To et al., 2019) and (Mennuni et al., 2021) was performed for each cell type & genotype specific markers (also for each regulon genes) using hypergeometric test with adjusting for multiple testing (Holm method). Heatmaps were produced using R package ComplexHeatmap (v.2.8.0) with hierarchical clustering using euclidean distance (for grouped by cell type- fig 6, or individual cell type like in fig.7a). Pathway analysis was performed using enrichR R package (v.3.0).
 
-OXPHOS STOICHIOMETRIES Methods
+
+
+### Correlation Analysis
+
+**ADD:   OXPHOS STOICHIOMETRIES Methods**
+**ADD:   Stoichiometries**
+
+
+
+### Analysis of additional datasets
+
+**ADD:   SCENIC overlaps with other datasets**
+**ADD:   Adult mouse RNAseq data (1F)**
+
+
+| Reference             | Dataset         | DOI    |
+|.----------------------|.----------------|.-------|
+| The Tabula Muris Consortium, 2020 | The Tabula Muris Consortium | https://doi.org/10.1038/s41586-020-2496-1  |
+| Lai et al, 2021                   | GSE160312                   | https://doi.org/10.1038/s41419-021-04099-4 |
+| Saur et al, 2021                  | GSE152687                   | https://doi.org/10.1002/glia.23973         |
+
+
+
+
+### MEFs clones used for bulk RNA-seq and siRNA proliferation assay.
+
+
+For the bulk RNA-seq and the proliferation assay of siRNA treated cells, 10 clones of MEFs were used (5 clones with high heteroplasmy and 5 clones with low heteroplasmy).
+
+Table with clones and their respective heteroplasmy levels.
+
+| Clone    |  Heteroplasmy (%)|
+|----------|------------------|
+|clone_62  | 88|
+|clone_59  | 89|
+|clone_44  | 91|
+|clone_83  | 89|
+|clone_26  | 88|
+|clone_101 | 19|
+|clone_109 | 31|
+|clone_12  | 34|
+|clone_33  | 23|
+|clone_48  | 30|
+
+
+### Quality control and pre-processing of bulk RNA-seq
+
+QC of the sequencing was assessed using FastQC (v XXXX), fastq_screen (v XXXXX) and RSeQC  (v XXXX) and summarised with MultiQC (v1.11). Reads were trimmed to remove adapters and low quality bases with TrimGalore! (v0.6.5) and aligned to the human genome (GRCh38) with STAR aligner (v XXXX), with a mean of 87.4% reads uniquely mapping and mean of 12.4M paired reads/sample. Gene quantification was determined with STAR.
+
+
+### Bulk RNAseq analysis
+Counts extracted with STAR were used to perform differential gene analysis in R (version 4.2.1) using package DESeq2 (v.1.36.0). Read counts were normalised on estimated size factors. Fold changes were calculated with function lfcShrink using estimator "ashr". Principal component analysis (PCA) was performed on rlog-transformed count data for all genes. GO enrichment analysis was performed using enrichR package (v.3.1) and Kegg pathway analysis using clusterProfiler (v.4.4.4), on DEGs with absolute log2 fold change >1 and adjusted P value <0.05.
+
+
+### Proliferation assays
+
+Two independently conducted proliferation experiments were merged, and means for each clone calculated.
+
+**ADD:   Statistics XXX**
+
+
+
+
 
 
 ------------------------------------------------
@@ -67,7 +140,7 @@ The batch effect was removed using SCTransform and Harmony. Neither cell cycle p
 
 **Figure 1B.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_1_B.png" width=400px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_1_B.png" width=350px><br>
 
 Figure 1B. UMAP of single-cell transcripts defining ectodermal, endodermal and mesodermal cell lineages based on Pou3f1 (blue), Foxa1 (yellow) and Pdgfra (magenta) expression respectively.
 
@@ -103,7 +176,7 @@ UMAP = Uniform Manifold Approximation and Projection.
 
 [Download violin plots Figure S1B](scRNAseq_mouse_E8.5/Figure_S1B.pdf)
 
-[Download violin plots Figure S1D](scRNAseq_mouse_E8.5/Figure_S1D.png)
+[Download heatmap Figure S1D](scRNAseq_mouse_E8.5/Figure_S1D.png)
 
 (B) Violin plots showing expression profiles of selected nuclear-encoded mitochondrial genes Ndufb5, Timm44 & Cox10, showing no significant differential expression across the 17 cell lineages.
 
@@ -183,7 +256,7 @@ Figure 4E. Violin plots showing pseudo-bulk expression profiles of specific mtDN
 
 **Figure 4F.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/MBU_spb54_005_Fig_4F_SEURAT_ComplexHeatmap_WikiPathways_l2fc_0.25_reordered2.png" width=700px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_4F.25_reordered2.png" width=800px><br>
 [Download PDF Version of fig 4F Heatmap](scRNAseq_mouse_E8.5/Figure_4F.pdf)
 
 Figure 4F. Heatmap showing significantly enriched WikiPathways (2019 mouse annotation), based on differentially regulated genes in at least one cell lineage in m.5019A>G and m.5024C>T embryos compared to WT. mRNA processing, pluripotency and ribosomal protein genes are enriched across multiple lineages in both mutants, whilst other pathways show lineage- and strain-specific enrichment. p < 0.05 for all green squares.
@@ -191,7 +264,7 @@ Figure 4F. Heatmap showing significantly enriched WikiPathways (2019 mouse annot
 
 **Related supplementary figure S5.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_S5B.png" width=500px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_S5B.png" width=800px><br>
 [Download Heatmap Figure S5B](scRNAseq_mouse_E8.5/Figure_S5B.pdf)
 
 (B) Heatmap showing significantly enriched GO Biological Processes (2018 annotation), based on differentially regulated genes for each cell lineage in m.5024C>T and m.5019A>G embryos compared to WT. p < 0.05 for all green squares.
@@ -216,7 +289,7 @@ WT = Wild-type, CRISPR = Clustered Regularly Interspaced Short Palindromic Repea
 
 **Figure 5A.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_5A.png" width=350px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_5A.png" width=800px><br>
 [Download PDF Version](scRNAseq_mouse_E8/Figure_5A.pdf)
 
 Figure 5A. Heatmap showing relative expression levels of 51 epistatic buffer/suppressor genes identified in CRISPR knockout screens, filtered to show genes that exhibit differential expression patterns between WT and m.5024C>T or m.5019A>G. Filters applied on scaled gene expression: Minimum difference between mutant - WT < -0.2, and maximum for the scaled gene expression > 0.5 for at least 1 cell type, across all cell lineages and mouse strains.
@@ -225,10 +298,10 @@ Figure 5A. Heatmap showing relative expression levels of 51 epistatic buffer/sup
 
 **Figure 5B.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_5B_S6C.png" width=350px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_5B_S6C.png" width=1000px><br>
 [Download PDF Version](scRNAseq_mouse_E8.5/Figure_5B_S6C.pdf)
 
-Figure 5B. Correlation of genes involved in oxidative phosphorylation for selected cell types. Heatmaps showing Pearson correlation strength between OXPHOS genes separately for WT, m.5019A>G and m.5024C>T embryos (left) and barplot showing binarised correlation as a measure of number of correlated gene pairs (right). A cut-off of > 0.5 for correlation coefficient r</sup>2</sup> was applied to count presence or absence of correlation between pairs of genes.
+Figure 5B. Correlation of genes involved in oxidative phosphorylation for selected cell types. Heatmaps showing Pearson correlation strength between OXPHOS genes separately for WT, m.5019A>G and m.5024C>T embryos (left) and barplot showing binarised correlation as a measure of number of correlated gene pairs (right). A cut-off of > 0.5 for correlation coefficient r<sup>2</sup> was applied to count presence or absence of correlation between pairs of genes.
 
 WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 
@@ -238,7 +311,7 @@ WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 
 **Figure 6A.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_6A_6B_6C.png" width=700px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_6A_6B_6C.png" width=1000px><br>
 
 [Download PDF Version of fig 6A Heatmap](scRNAseq_mouse_E8.5/Figure_6A.pdf)
 
@@ -262,7 +335,7 @@ WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 
 **Figure S7 Cell lineage-specific compensatory mechanisms are coordinated by gene regulatory networks, related to Figures 6 & 7**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_S7A.png" width=700px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_S7A.png" width=900px><br>
 [Download PDF Version](scRNAseq_mouse_E8.5/Figure_S7A.pdf)
 
 (A) SCENIC heatmap showing binary activity of identified regulons. A regulon is defined as ‘active’ by having a minimum of 50% cells showing regulon activity in at least one group. Both embryo-wide and lineage-specific patterns of regulon activity are seen in addition to mutation specific signatures for some regulons.
@@ -318,6 +391,6 @@ PCA = Principle Component Analysis, MEF = Mouse Embryonic Fibroblast, siRNA = Sm
 
 **Supplementary figure S6B**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_S6B_ISR.png" width=800px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_S6B_ISR.png" width=900px><br>
 
 (B) Heatmap showing relative expression levels of ISRmt genes in WT, m.5024C>T and m.5019A>G cells across all cell lineages. Transcription of the key ISRmt regulator Atf4 was downregulated in multiple lineages, particularly in m.5019A>G cells, suggesting that ISRmt is not activated in the mutant strains. ISRmt gene list consists of genes annotated under the Gene Ontology term ‘Integrated Stress Response Signalling’ (GO ID: 0140467) plus known Atf4 target genes (Quiros et al., 2017). * = p<0.05
