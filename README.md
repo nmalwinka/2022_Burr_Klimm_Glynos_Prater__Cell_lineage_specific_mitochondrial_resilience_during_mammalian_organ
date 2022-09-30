@@ -21,16 +21,18 @@
 
 ### Publication ###
 
-Burr, S., Klimm, F., Glynos, A., Prater, M., Sendon, P., Nash, P., Powell, C., Simard, M., Bonekamp, N., Charl, J., Diaz, H., Bozhilova, L., Nie, N., Zhang, H., Frison, M., Falkenberg, M., Minczuk, M., Jones, N., Stewart, J., Chinnery, P. (2022) Cell lineage specific mitochondrial resilience during mammalian organogenesis. [[Nature]](LINK-to-page) [[DOI]](DOI-address-html)
+Burr, S., Klimm, F., Glynos, A., Prater, M., Sendon, P., Nash, P., Powell, C., Simard, M., Bonekamp, N., Charl, J., Diaz, H., Bozhilova, L., Nie, N., Zhang, H., Frison, M., Falkenberg, M., Minczuk, M., Jones, N., Stewart, J., Chinnery, P. (2022) Cell lineage specific mitochondrial resilience during mammalian organogenesis. [[Cell]](LINK-to-page) [[DOI]](DOI-address-html)
 
 # Software
 
-| Reference             | Software        | DOI    |
-|----------------------|----------------|-------|
+| Reference             | Software     | DOI   |
+|---------------------- |--------------|-------|
 |Hao et al., 2021       | Seurat v4    | https://doi.org/10.1016/j.cell.2021.04.048 |
 |Dobin et al., 2013     | STAR aligner | https://doi.org/10.1093/bioinformatics/bts635 |
 |Aibar et al., 2017     | SCENIC       | https://doi.org/10.1038/nmeth.4463 |
 |Korsunsky et al, 2019  | Harmony      | https://doi.org/10.1038/s41592-019-0619-0 |
+|Simon Andrews          | FastQC       | https://www.bioinformatics.babraham.ac.uk/projects/fastqc/ |
+|Ewels et al, 2016      | MultiQC      | https://doi.org/10.1093/bioinformatics/btw354 |
 
 
 ------------------------------------------------
@@ -40,7 +42,7 @@ Burr, S., Klimm, F., Glynos, A., Prater, M., Sendon, P., Nash, P., Powell, C., S
 
 Raw FASTQ files from 10x sequencing were demultiplexed and aligned in a two-pass alignment to the Mus musculus reference genome (version Mus_musculus.GRCm38.102) using STARsolo (version 2.7.3a) (Dobin et al., 2013), with default settings set according to the 10x chromium chemistry used. For the expression matrix analysis, we used Seurat (version v.4.0.5) (Hao et al., 2021) and perform standard pre-processing steps: removing cells with less than 200 genes, removing genes that have been detected in less than 3 cells, normalisation to 10,000 reads per cell, and log-transformation. After this quality control, we have 11020 cells in total.
 
-Table 1: Number of cells after alignment and pre-processing in both batches. Batch A consists of Wildtype and the 5024 mutation. Batch B consists of Wildtype, 5019, and 5014 mutation. In total 11020 cells pass the quality control filtering.
+**Table 1:** Number of cells after alignment and pre-processing in both batches. Batch A consists of Wildtype and the 5024 mutation. Batch B consists of Wildtype, 5019, and 5014 mutation. In total 11020 cells pass the quality control filtering.
 
 | Batch A: Wildtype	| Batch A: 5024 mutation	| Batch B: Wildtype |	Batch B: 5019 mutation | Batch B: 5024 mutation |
 | ---- | ---- |---- | ---- |---- |  
@@ -71,7 +73,7 @@ Enrichment with buffering genes from (To et al., 2019) and (Mennuni et al., 2021
 
 
 | Reference             | Dataset         | DOI    |
-|.----------------------|.----------------|.-------|
+|---------------------- |---------------- |------- |
 | The Tabula Muris Consortium, 2020 | The Tabula Muris Consortium | https://doi.org/10.1038/s41586-020-2496-1  |
 | Lai et al, 2021                   | GSE160312                   | https://doi.org/10.1038/s41419-021-04099-4 |
 | Saur et al, 2021                  | GSE152687                   | https://doi.org/10.1002/glia.23973         |
