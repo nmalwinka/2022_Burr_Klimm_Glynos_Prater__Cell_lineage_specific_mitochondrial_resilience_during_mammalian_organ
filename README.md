@@ -26,12 +26,11 @@ Burr, S., Klimm, F., Glynos, A., Prater, M., Sendon, P., Nash, P., Powell, C., S
 # Software
 
 | Reference             | Software        | DOI    |
-|.----------------------|.----------------|.-------|
+|----------------------|----------------|-------|
 |Hao et al., 2021       | Seurat v4    | https://doi.org/10.1016/j.cell.2021.04.048 |
 |Dobin et al., 2013     | STAR aligner | https://doi.org/10.1093/bioinformatics/bts635 |
 |Aibar et al., 2017     | SCENIC       | https://doi.org/10.1038/nmeth.4463 |
 |Korsunsky et al, 2019  | Harmony      | https://doi.org/10.1038/s41592-019-0619-0 |
-|||  |
 
 
 ------------------------------------------------
