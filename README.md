@@ -32,7 +32,7 @@ Raw FASTQ files from 10x sequencing were demultiplexed and aligned in a two-pass
 
 Table 1: Number of cells after alignment and pre-processing in both batches. Batch A consists of Wildtype and the 5024 mutation. Batch B consists of Wildtype, 5019, and 5014 mutation. In total 11020 cells pass the quality control filtering.
 
-| Batch A: | Wildtype	Batch A: |5024 mutation	Batch B: | Wildtype	Batch B: | 5019 mutation	| Batch B: 5024 mutation |
+| Batch A: Wildtype	| Batch A: 5024 mutation	| Batch B: Wildtype |	Batch B: 5019 mutation | Batch B: 5024 mutation |
 | ---- | ---- |---- | ---- |---- |  
 | 2174	| 2456	| 2750 |	1649	|  1991 |
 
@@ -58,7 +58,7 @@ OXPHOS STOICHIOMETRIES Methods
 **Batch correction with SCtransform and Harmony**
 
 <IMG SRC="scRNAseq_mouse_E8.5/MBU_spb54_005__SCENIC_Multi_UMAP_QC___SCT__regressed.png" width=900px><br>
-[Download PDF Version](Figures/MBU_spb54_005__SCENIC_Multi_UMAP_QC___SCT__regressed.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/MBU_spb54_005__SCENIC_Multi_UMAP_QC___SCT__regressed.pdf)
 
 The batch effect was removed using SCTransform and Harmony. Neither cell cycle phase nor MT content was regressed out.
 
@@ -84,8 +84,10 @@ Figure 1D. Abundance of mtDNA-encoded transcripts across different cell types, s
 **Figure 1E & 1F.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_1E_1F.png" width=1000px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_1E.pdf)
-[Download PDF Version](scRNAseq_mouse_E8/Figure_1F.pdf)
+
+[Download PDF Version of 1E](scRNAseq_mouse_E8.5/Figure_1E.pdf)
+
+[Download PDF Version of 1F](scRNAseq_mouse_E8.5/Figure_1F.pdf)
 
 Figure 1E. Violin plots showing transcript abundance of selected nuclear-encoded mitochondrial genes Grsf1, Chchd10 & Slc25a4, showing significant differential expression across the 17 cell lineages. * = p < 0.05. Selected genes represent the top three most differentially regulated transcripts across at least two cell lineages. p-values for all nuclear mitochondrial genes with significant differential expression in at least one cell lineage can be found in (Table S1)
 
@@ -99,8 +101,9 @@ UMAP = Uniform Manifold Approximation and Projection.
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_S1B_S1C_S1D.png" width=900px><br>
 
-[Download violin plots Figure S1B](scRNAseq_mouse_E8/Figure_S1B.pdf)
-[Download violin plots Figure S1D](scRNAseq_mouse_E8/Figure_S1D.png)
+[Download violin plots Figure S1B](scRNAseq_mouse_E8.5/Figure_S1B.pdf)
+
+[Download violin plots Figure S1D](scRNAseq_mouse_E8.5/Figure_S1D.png)
 
 (B) Violin plots showing expression profiles of selected nuclear-encoded mitochondrial genes Ndufb5, Timm44 & Cox10, showing no significant differential expression across the 17 cell lineages.
 
@@ -133,8 +136,10 @@ WT = Wild-type.
 **Related supplementary figure S4.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_S4F_sex.png" width=600px><br>
-[Download Heatmap Figure S4F](scRNAseq_mouse_E8/Figure_S4F_sex.png)
-[Download Venn Figure S4H](scRNAseq_mouse_E8/Figure_S4H.pdf)
+
+[Download Heatmap Figure S4F](scRNAseq_mouse_E8.5/Figure_S4F_sex.png)
+
+[Download Venn Figure S4H](scRNAseq_mouse_E8.5/Figure_S4H.pdf)
 
 (F) Heatmap showing relative expression levels of mtDNA and nuclear encoded mitochondrial gene transcripts in m.5019A>G, m.5024C>T and wild-type (WT) embryonic cells.
 
@@ -144,7 +149,7 @@ WT = Wild-type.
 **Related supplementary figure S5.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_S5A.png" width=500px><br>
-[Download Heatmap Figure S5A](scRNAseq_mouse_E8/Figure_S5A.png)
+[Download Figure S5A](scRNAseq_mouse_E8.5/Figure_S5A.png)
 
 (A) Top 20 most upregulated genes, ranked left to right by relative transcript expression score (-log10(p.adj) * abs(l2fc)) compared to WT, in the mid hindbrain and mixed mesoderm lineages for both m.5019A>G and m.5024C>T embryos. Ranked lists for other lineages can be found in (Table S5)
 
@@ -164,14 +169,14 @@ Figure 4A. Venn diagram showing the intersection between published genetic modif
 **Figure 4C.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_4C.png" width=300px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_4C.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_4C.pdf)
 
 Figure 4C. Dot plot showing relative expression levels of 17 epistatic buffer/suppressor genes identified in the in vitro CRISPR screen that were significantly downregulated in at least one mutant strain when compared to WT. Genes labelled in green are annotated in the Mouse MitoCarta3.0 inventory.
 
 **Figure 4E.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_4E.png" width=900px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_4E.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_4E.pdf)
 
 Figure 4E. Violin plots showing pseudo-bulk expression profiles of specific mtDNA and nuclear gene transcripts encoding mitochondrial proteins in WT, m.5024C>T and m.5019A>G embryos. ** = p < 0.01
 
@@ -179,14 +184,15 @@ Figure 4E. Violin plots showing pseudo-bulk expression profiles of specific mtDN
 **Figure 4F.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/MBU_spb54_005_Fig_4F_SEURAT_ComplexHeatmap_WikiPathways_l2fc_0.25_reordered2.png" width=700px><br>
-[Download PDF Version of fig 4F Heatmap](scRNAseq_mouse_E8/Figure_4F.pdf)
+[Download PDF Version of fig 4F Heatmap](scRNAseq_mouse_E8.5/Figure_4F.pdf)
 
 Figure 4F. Heatmap showing significantly enriched WikiPathways (2019 mouse annotation), based on differentially regulated genes in at least one cell lineage in m.5019A>G and m.5024C>T embryos compared to WT. mRNA processing, pluripotency and ribosomal protein genes are enriched across multiple lineages in both mutants, whilst other pathways show lineage- and strain-specific enrichment. p < 0.05 for all green squares.
+
 
 **Related supplementary figure S5.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_S5B.png" width=500px><br>
-[Download Venn Figure S5B](scRNAseq_mouse_E8/Figure_S5B.pdf)
+[Download Heatmap Figure S5B](scRNAseq_mouse_E8.5/Figure_S5B.pdf)
 
 (B) Heatmap showing significantly enriched GO Biological Processes (2018 annotation), based on differentially regulated genes for each cell lineage in m.5024C>T and m.5019A>G embryos compared to WT. p < 0.05 for all green squares.
 
@@ -196,7 +202,7 @@ Figure 4F. Heatmap showing significantly enriched WikiPathways (2019 mouse annot
 **Figure 4G.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_4G.png" width=350px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_4G.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_4G.pdf)
 
 Heatmap showing enrichment of identified epistatic buffers/suppressors amongst genes that are downregulated in m.5019A>G and m.5024C>T mutants compared to WT across all cell lineages. m.5024C>T embryos show a stronger downregulation signature than m.5019A>G embryos, perhaps representing a stronger compensatory response to mitochondrial dysfunction. p < 0.05 for all green bars.
 
@@ -220,7 +226,7 @@ Figure 5A. Heatmap showing relative expression levels of 51 epistatic buffer/sup
 **Figure 5B.**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_5B_S6C.png" width=350px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_5B_S6C.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_5B_S6C.pdf)
 
 Figure 5B. Correlation of genes involved in oxidative phosphorylation for selected cell types. Heatmaps showing Pearson correlation strength between OXPHOS genes separately for WT, m.5019A>G and m.5024C>T embryos (left) and barplot showing binarised correlation as a measure of number of correlated gene pairs (right). A cut-off of > 0.5 for correlation coefficient r</sup>2</sup> was applied to count presence or absence of correlation between pairs of genes.
 
@@ -234,17 +240,17 @@ WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_6A_6B_6C.png" width=700px><br>
 
-[Download PDF Version of fig 6A Heatmap](scRNAseq_mouse_E8/Figure_6A.pdf)
+[Download PDF Version of fig 6A Heatmap](scRNAseq_mouse_E8.5/Figure_6A.pdf)
 
-[Download PDF Version of fig 6B Gata4](scRNAseq_mouse_E8/Figure_6B_Gata4.pdf)
+[Download PDF Version of fig 6B Gata4](scRNAseq_mouse_E8.5/Figure_6B_Gata4.pdf)
 
-[Download PDF Version of fig 6B Foxa3](scRNAseq_mouse_E8/Figure_6B_Foxa3.pdf)
+[Download PDF Version of fig 6B Foxa3](scRNAseq_mouse_E8.5/Figure_6B_Foxa3.pdf)
 
-[Download PDF Version of fig 6C Mecom](scRNAseq_mouse_E8/Figure_6C_Mecom.pdf)
+[Download PDF Version of fig 6C Mecom](scRNAseq_mouse_E8.5/Figure_6C_Mecom.pdf)
 
-[Download PDF Version of fig 6C Sox9](scRNAseq_mouse_E8/Figure_6C_Sox9.pdf)
+[Download PDF Version of fig 6C Sox9](scRNAseq_mouse_E8.5/Figure_6C_Sox9.pdf)
 
-[Download PDF Version of fig 6C Sox10](scRNAseq_mouse_E8/Figure_6C_Sox10.pdf)
+[Download PDF Version of fig 6C Sox10](scRNAseq_mouse_E8.5/Figure_6C_Sox10.pdf)
 
 
 (A) Heatmap of selected SCENIC regulon activity across all cell lineages in WT, m.5024C>T and m.5019A>G mice, showing lineage-specific transcriptional activation patterns. Number in brackets is the number of genes (g) identified with high confidence in each regulon.
@@ -257,13 +263,13 @@ WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 **Figure S7 Cell lineage-specific compensatory mechanisms are coordinated by gene regulatory networks, related to Figures 6 & 7**
 
 <IMG SRC="scRNAseq_mouse_E8.5/Figure_S7A.png" width=700px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_S7A.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_S7A.pdf)
 
 (A) SCENIC heatmap showing binary activity of identified regulons. A regulon is defined as ‘active’ by having a minimum of 50% cells showing regulon activity in at least one group. Both embryo-wide and lineage-specific patterns of regulon activity are seen in addition to mutation specific signatures for some regulons.
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_S7C.png" width=700px><br>
-[Download PDF Version](scRNAseq_mouse_E8/Figure_S7C_1.pdf)
-[Download PDF Version](scRNAseq_mouse_E8/Figure_S7C_2.pdf)
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_S7C.png" width=600px><br>
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_S7C_1.pdf)
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_S7C_2.pdf)
 
 (C) Scatter plots showing the percentage overlap between marker genes in SCENIC regulons (Figure S7A) and differentially regulated genes identified in two published RNAseq datasets comparing WT and Sox10 knockdown in human and mouse neural crest-derived cells. Neural crest-specific regulons identified by SCENIC, including Sox10, Sox9, Tfap2a & Tfap2c, were amongst those with the highest overlap, confirming the validity of the SCENIC analysis.
 
@@ -271,7 +277,7 @@ WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 
 **Figure 6D.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_6D.png" width=350px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_6D.png" width=600px><br>
 
 (D) Network displaying differentially expressed marker genes identified in the Sox9 and Sox 10 regulons in the neural crest lineage in m.5024C>T and m.5019A>G mice, with just under half of the identified marker genes (24/56) being shared by both mutant strains. Lines between circles and boxes indicate the regulon(s) associated with that gene. Lines between circles indicate predicted protein-protein interactions. Red text indicates genes involved in neural crest differentiation.
 
@@ -283,13 +289,18 @@ WT = Wild-type, UMAP = Uniform Manifold Approximation and Projection.
 
 **Figure 7A.**
 
-<IMG SRC="bulk_RNAseq_MEFs/Figure_7.png" width=350px><br>
+<IMG SRC="bulk_RNAseq_MEFs/Figure_7.png" width=900px><br>
 
 [Download PDF Version of fig 7A](bulk_RNAseq_MEFs/Figure_7A.pdf)
+
 [Download PDF Version of fig 7B](bulk_RNAseq_MEFs/Figure_7B.pdf)
+
 [Download PDF Version of fig 7C](bulk_RNAseq_MEFs/Figure_7C.pdf)
+
 [Download PDF Version of fig 7D](siRNA_MEFs/Figure_7D.pdf)
+
 [Download volcano plot](siRNA_MEFs/Figure_7_related_volcano.pdf)
+
 
 (A) PCA plot of bulk RNAseq data from ten clonal populations of m.5024C>T MEF cells shows differential clustering of clones based on heteroplasmy level. Low heteroplasmy < 35%, high heteroplasmy > 80%
 
@@ -303,21 +314,10 @@ PCA = Principle Component Analysis, MEF = Mouse Embryonic Fibroblast, siRNA = Sm
 
 
 
-### Integrated Stress Response**
+### Integrated Stress Response
 
 **Supplementary figure S6B**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_S6B_ISR.png" width=500px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_S6B_ISR.png" width=800px><br>
 
 (B) Heatmap showing relative expression levels of ISRmt genes in WT, m.5024C>T and m.5019A>G cells across all cell lineages. Transcription of the key ISRmt regulator Atf4 was downregulated in multiple lineages, particularly in m.5019A>G cells, suggesting that ISRmt is not activated in the mutant strains. ISRmt gene list consists of genes annotated under the Gene Ontology term ‘Integrated Stress Response Signalling’ (GO ID: 0140467) plus known Atf4 target genes (Quiros et al., 2017). * = p<0.05
-
-
-
-
-
-
-
-
-
-
-x
