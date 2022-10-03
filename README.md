@@ -92,16 +92,16 @@ Table with clones and their respective heteroplasmy levels.
 
 | Clone    |  Heteroplasmy (%)|
 |----------|------------------|
-|clone_62  | 88|
-|clone_59  | 89|
-|clone_44  | 91|
-|clone_83  | 89|
-|clone_26  | 88|
-|clone_101 | 19|
-|clone_109 | 31|
-|clone_12  | 34|
-|clone_33  | 23|
-|clone_48  | 30|
+|clone_62  | 80|
+|clone_59  | 87|
+|clone_44  | 89|
+|clone_83  | 87|
+|clone_26  | 90|
+|clone_101 | 20|
+|clone_109 | 30|
+|clone_12  | 31|
+|clone_33  | 22|
+|clone_48  | 27|
 
 
 ### Quality control and pre-processing of bulk RNA-seq
