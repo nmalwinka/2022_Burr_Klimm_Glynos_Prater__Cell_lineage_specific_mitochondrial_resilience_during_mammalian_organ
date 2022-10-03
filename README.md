@@ -61,22 +61,24 @@ Enrichment with buffering genes from (To et al., 2019) and (Mennuni et al., 2021
 
 ### Correlation Analysis
 
-**ADD:   OXPHOS STOICHIOMETRIES Methods**
-**ADD:   Stoichiometries**
-
+Pearson correlation of genes involved in oxidative phosphorylation (as annotated in mouse MitoCarta v3) was calculated separately for WT, m.5019A>G and m.5024C>T embryos, for selected cell types. To measure the number of correlated gene pairs (right) for each genotype, correlation data was binarised with a cut-off of > 0.5 for correlation coefficient r<sup>2</sup>, to count presence or absence of correlation between pairs of genes. Quantile-quantile (qq) plots were created to visually inspect changes in gene pair correlations between WT and mutant genotypes.
 
 
 ### Analysis of additional datasets
 
-**ADD:   SCENIC overlaps with other datasets**
-**ADD:   Adult mouse RNAseq data (1F)**
-
+Publically available datasets used:
 
 | Reference             | Dataset         | DOI    |
 |---------------------- |---------------- |------- |
 | The Tabula Muris Consortium, 2020 | The Tabula Muris Consortium | https://doi.org/10.1038/s41586-020-2496-1  |
 | Lai et al, 2021                   | GSE160312                   | https://doi.org/10.1038/s41419-021-04099-4 |
 | Saur et al, 2021                  | GSE152687                   | https://doi.org/10.1002/glia.23973         |
+
+
+The Tabula Muris Consortium data was used to compare with expression of genes involved in oxidative phosphorylation in E8.5 WT mouse embryo. Bulk RNA-seq stages: 1 month and 9 month old, were selected because there were highest number of replicates for these stages and they were representing post-natal young and adult mouse.
+Raw counts were processed with DESeq2, and variance stabilizing transformation was used to visualise gene expression on the heatmap together with the mouse embryo.
+
+In order to validate genes identified in SCENIC regulons, Sox10 regulon. Two separate Sox10 siRNA RNA-seq datasets (GSE160312 in human pluripotent stem cells, and GSE152687 in mouse Schwann cells) were used to identify genes regulated by the transcription factor (TF) Sox10, and were compared with the SCENIC Sox10 regulon genes that were predicted to be regulated by Sox10 TF. For each regulon identitied by SCENIC (with minimum 30 genes), percentage of overlap with the siRNA datasets was calculated, and plotted as a line-plot with regulons ordered by the percent overlap.
 
 
 
@@ -104,11 +106,11 @@ Table with clones and their respective heteroplasmy levels.
 
 ### Quality control and pre-processing of bulk RNA-seq
 
-QC of the sequencing was assessed using FastQC (v XXXX), fastq_screen (v XXXXX) and RSeQC  (v XXXX) and summarised with MultiQC (v1.11). Reads were trimmed to remove adapters and low quality bases with TrimGalore! (v0.6.5) and aligned to the human genome (GRCh38) with STAR aligner (v XXXX), with a mean of 87.4% reads uniquely mapping and mean of 12.4M paired reads/sample. Gene quantification was determined with STAR.
+QC of the sequencing was assessed using FastQC (v0.11.9), fastq_screen (v0.14.1), Qualimap (v.2.2.1) and summarised with MultiQC (v1.11). Reads were aligned to the human genome (GRCh38) with STAR aligner (v2.7.8a), with a mean of 87.4% reads uniquely mapping and mean of 12.4M paired reads/sample. Gene quantification was determined with STAR.
 
 
 ### Bulk RNAseq analysis
-Counts extracted with STAR were used to perform differential gene analysis in R (version 4.2.1) using package DESeq2 (v.1.36.0). Read counts were normalised on estimated size factors. Fold changes were calculated with function lfcShrink using estimator "ashr". Principal component analysis (PCA) was performed on rlog-transformed count data for all genes. GO enrichment analysis was performed using enrichR package (v.3.1) and Kegg pathway analysis using clusterProfiler (v.4.4.4), on DEGs with absolute log2 fold change >1 and adjusted P value <0.05.
+Counts extracted with STAR were used to perform differential gene analysis in R (version 4.2.1) using package DESeq2 (v.1.36.0). Since the samples were sequenced in pool on 2 separate lanes, counts were combined using DESeq2 function "collapseReplicates". Genes with no expression were filtered out. Read counts were normalised on estimated size factors. Fold changes were calculated with function lfcShrink using estimator "ashr". Principal component analysis (PCA) was performed on rlog-transformed count data for all genes. GO enrichment analysis was performed using enrichR package (v.3.1) and Kegg pathway analysis using clusterProfiler (v.4.4.4), on DEGs with absolute log2 fold change >1 and adjusted P value <0.05.
 
 
 ### Proliferation assays
