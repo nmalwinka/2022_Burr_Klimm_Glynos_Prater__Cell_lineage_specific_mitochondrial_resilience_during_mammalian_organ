@@ -278,7 +278,7 @@ Figure 4E. Violin plots showing pseudo-bulk expression profiles of specific mtDN
 
 **Figure 4F.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_4F.png" width=800px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_4F.png" width=1000px><br>
 [Download PDF Version of fig 4F Heatmap](scRNAseq_mouse_E8.5/Figure_4F.pdf)
 
 Figure 4F. Heatmap showing significantly enriched WikiPathways (2019 mouse annotation), based on differentially regulated genes in at least one cell lineage in m.5019A>G and m.5024C>T embryos compared to WT. mRNA processing, pluripotency and ribosomal protein genes are enriched across multiple lineages in both mutants, whilst other pathways show lineage- and strain-specific enrichment. p < 0.05 for all green squares.
