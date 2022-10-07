@@ -354,6 +354,14 @@ WT = Wild-type, OXPHOS = Oxidative Phosphorylation.
 
 (C) UMAPs showing differential lineage-specific activity of the Mecom (endothelial, less active), Sox9 (neural crest, more active) and Sox 10 (neural crest, more active) regulons in m.5024C>T and m.5019A>G mice compared to WT. In the main UMAP, WT, m.5024C>T and m.5019A>G cells are overlaid, with each mouse strain displayed separately in the expanded panels.
 
+**Genotype-specific compensatory response in m.5024C>T**
+
+We have observed also cell-type independent increased activity of several regulons in m.5024C>T mouse:
+
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_6A_just_genotype.png" width=900px><br>
+[Download PDF Version](scRNAseq_mouse_E8.5/Figure_6A_just_genotype.pdf)
+
+
 
 **Figure S7 Cell lineage-specific compensatory mechanisms are coordinated by gene regulatory networks, related to Figures 6 & 7**
 
