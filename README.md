@@ -230,9 +230,9 @@ WT = Wild-type.
 
 **Related supplementary figure S4.**
 
-<IMG SRC="scRNAseq_mouse_E8.5/Figure_S4F_sex.png" width=600px><br>
+<IMG SRC="scRNAseq_mouse_E8.5/Figure_S4F.png" width=600px><br>
 
-[Download Heatmap Figure S4F](scRNAseq_mouse_E8.5/Figure_S4F_sex.png)
+[Download Heatmap Figure S4F](scRNAseq_mouse_E8.5/Figure_S4F.pdf)
 
 [Download Venn Figure S4H](scRNAseq_mouse_E8.5/Figure_S4H.pdf)
 

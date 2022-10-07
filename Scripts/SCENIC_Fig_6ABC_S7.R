@@ -74,14 +74,8 @@ MakeCustomFeaturePlot <- function(regulon2plot, outdir, colorRampBIAS = 1){
 
 
 
-
-
-
-
-max(matrix.umap$UMAP_1) - min(matrix.umap$UMAP_1)
-max(matrix.umap$UMAP_2) - min(matrix.umap$UMAP_2)
-
-
+#max(matrix.umap$UMAP_1) - min(matrix.umap$UMAP_1)
+#max(matrix.umap$UMAP_2) - min(matrix.umap$UMAP_2)
 
 MakeCustomFeaturePlotWithZoom <- function(regulon2plot, colorRampBIAS = 1, zoom_celltype = NULL, zoom_level = 2, color_scheme = "A"){
   regulon_name <- print(regulon2plot)
@@ -247,6 +241,7 @@ message("+----------------------------------------------------------------------
 
 selected_TFs <- c("Hand1", "Hoxc6", "Pax6", "Hoxd1", "Pax7", "Pou3f2", "T","Id4","Hoxa5","Six3","Twist1","Six2","Gata3","Ovol","Pitx1","Nkx2−5","Gata4","Nkx3−1","Irf2","Foxa3","Tfap2a","Nkx1−2","Lef1","Gbx2","Foxc2","Foxc1", "Sox9", "Sox10", "Nkx1-2", "Lhx1", "Mecom", "Gata5", "Gata6", "Taf1", "E2f3", "Maz", "Rad21","Cnot3","Bclaf1","E2f5","Klf12" )
 
+selected_TFs <- c("Taf1", "E2f3", "Maz", "Rad21","Cnot3","Bclaf1","E2f5","Klf12")
 
 regulonAUC <- loadInt(scenicOptions, "aucell_regulonAUC")
 regulonAUCx <- regulonAUC
@@ -303,10 +298,40 @@ f2 = circlize::colorRamp2( c(-2, 0, 2.5), c("blue", "white","red"), space = "RGB
 ht2 <- ComplexHeatmap::Heatmap(df, name="Scaled \nregulon \nactivity", col = f2, clustering_distance_rows = "euclidean", clustering_distance_columns = "euclidean", cluster_columns = F, show_row_names = TRUE, width  = unit(ncol(df)/2, "cm"),height  = unit(nrow(df)/2, "cm"), top_annotation = ha)
 ht2
 
-pdf(paste( Project, "Fig7a_SCTBatchRegr", "___Pheatmap_regulonAUC",  GROUPS, "_scaled", "_topregulators", "v4.pdf", sep="_"), width=18,height=10)
+pdf(paste( Project, "Fig7a_SCTBatchRegr", "___Pheatmap_regulonAUC",  GROUPS, "_scaled", "_topregulators", "v5.pdf", sep="_"), width=18,height=10)
 par(bg=NA)
 ht2
 dev.off()
+
+
+
+idx <- grep("m.5019A>G", colnames(regulonActivity_byCellType_Scaled2))
+df_x <- regulonActivity_byCellType_Scaled2[,-idx]
+
+col_split_df <- data.frame(group= colnames(df_x) )
+col_split_df$celltype <- gsub( " WT", "", col_split_df$group)
+col_split_df$celltype <- gsub( " m.5024C>T", "", col_split_df$celltype)
+col_split_df$celltype <- gsub( " m.5019A>G", "", col_split_df$celltype)
+col_split_df$celltype <- gsub( " &", "", col_split_df$celltype)
+col_split_df$genotype <- gsub( ".* ", "", col_split_df$group)
+mouse_cols <- c( "m.5024C>T"= "firebrick", "WT"="darkolivegreen4", "m.5019A>G"="dodgerblue4")
+
+ha = columnAnnotation(CellType = col_split_df$celltype, Genotype = col_split_df$genotype, col = list(CellType = celltype_cols, Genotype=mouse_cols))
+
+df_xx <- as.data.frame(df_x)
+colnames(df_xx) <- col_split_df$celltype
+
+f2 = circlize::colorRamp2( c(-2, 0, 2.5), c("blue", "white","red"), space = "RGB") #  colorRampPalette(c("blue","white","red"))(100)
+
+ht2 <- ComplexHeatmap::Heatmap(df_xx, name="Scaled \nregulon \nactivity", col = f2, clustering_distance_rows = "euclidean", clustering_distance_columns = "euclidean", cluster_columns = F, show_column_names = T, show_row_names = TRUE, width  = unit(ncol(df)/3.3, "cm"),height  = unit(nrow(df)/2, "cm"), top_annotation = ha)
+ht2
+
+setwd(baseDir)
+pdf(paste( Project, "Fig7a_SCTBatchRegr", "___Pheatmap_regulonAUC",  GROUPS, "_scaled", "_topGenotypeRegulators", "v2.pdf", sep="_"), width=15,height=5)
+par(bg=NA)
+ht2
+dev.off()
+
 
 
 
