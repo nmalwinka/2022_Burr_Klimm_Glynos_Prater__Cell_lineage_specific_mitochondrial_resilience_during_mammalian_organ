@@ -188,6 +188,7 @@ message("+                           Fig 4E                                     
 message("+-------------------------------------------------------------------------------")
 
 Idents(Seurat_obj) <- Seurat_obj@meta.data$mouse
+Idents(Seurat_obj) <- factor(Idents(Seurat_obj), levels = c("WT", "m.5024C>T", "m.5019A>G"))
 
 selected_genes <- c("mt-Co1", "mt-Rnr1", "mt-Rnr2", "Sdha", "Uqcrc1", "Mtch2")
 
@@ -195,18 +196,17 @@ PT_SIZE <- 0.0
 SLOT    <-"data" 
 
 
-vln1  <- VlnPlot(Seurat_obj, features = "mt-Co1", cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  labs(y ="mt-Co1", x = "")  + geom_boxplot(width=0.1)
+vln1  <- VlnPlot(Seurat_obj, features = selected_genes[1], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="", x = selected_genes[1])
 
-vln2  <- VlnPlot(Seurat_obj, features = "mt-Rnr1", cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  labs(y ="mt-Rnr1", x = "")  + geom_boxplot(width=0.1)
+vln2  <- VlnPlot(Seurat_obj, features = selected_genes[2], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="", x = selected_genes[2])
 
-vln3  <- VlnPlot(Seurat_obj, features = "mt-Rnr2", cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  labs(y ="mt-Rnr2", x = "")  + geom_boxplot(width=0.1)
+vln3  <- VlnPlot(Seurat_obj, features = selected_genes[3], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="", x = selected_genes[3])
 
-vln4  <- VlnPlot(Seurat_obj, features = "Sdha", cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  labs(y ="Sdha", x = "")  + geom_boxplot(width=0.1)
+vln4  <- VlnPlot(Seurat_obj, features = selected_genes[4], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="", x = selected_genes[4])
 
-vln5  <- VlnPlot(Seurat_obj, features = "Uqcrc1", cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  labs(y ="Uqcrc1", x = "")  + geom_boxplot(width=0.1)
+vln5  <- VlnPlot(Seurat_obj, features = selected_genes[5], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="", x = selected_genes[5])
 
-vln6  <- VlnPlot(Seurat_obj, features = "Mtch2", cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  labs(y ="Mtch2", x = "")  + geom_boxplot(width=0.1)
-
+vln6  <- VlnPlot(Seurat_obj, features = selected_genes[6], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="",  x = selected_genes[6])
 
 
 pdf(paste( Project, "4E_VlnPlot_data","2.pdf", sep="_"), width=14,height=3.5) # "_celltype_regulators",
@@ -214,6 +214,12 @@ par(bg=NA)
 plot_grid(vln1,vln2,vln3,vln4,vln5,vln6 , ncol = 6)
 dev.off()
 
+vln_grid  <- VlnPlot(Seurat_obj, features = selected_genes, cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE, ncol = 6) +  geom_boxplot(width=0.1) #+ labs(x = "")   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank())  +
+
+pdf(paste( Project, "4E_VlnPlot_data","2.pdf", sep="_"), width=14,height=4) # "_celltype_regulators",
+par(bg=NA)
+vln_grid
+dev.off()
 
 
 message("+-------------------------------------------------------------------------------")
