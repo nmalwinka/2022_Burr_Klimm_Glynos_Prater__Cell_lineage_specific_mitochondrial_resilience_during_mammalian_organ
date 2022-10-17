@@ -2,15 +2,30 @@
 rm(list=ls())
 gc()
 
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - gene buffering                                                         # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("RColorBrewer")
 library("ggplot2")
 library("ggrepel")
 library("cowplot")
 library("Seurat") 
 library("biomaRt")
+})
+
 
 Project        <- "MBU_spb54_005__fig__Buffering"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(baseDir)
 
 Seurat_obj <- readRDS(paste0(baseDir, "/Input/MBU_spb54_005_Flo_SCENIC-_harmony_matrix.su_SCT_batch_regressed_.Rds"))
@@ -74,8 +89,10 @@ message("+----------------------------------------------------------------------
 message("+                     load in mitocarta genes                                   ")
 message("+-------------------------------------------------------------------------------")
 
-MitoCarta3 <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_summarised.csv")
-MitoCarta3_pathways <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_pathways.csv")
+# download Mitocarta v3 first from: https://www.broadinstitute.org/mitocarta/mitocarta30-inventory-mammalian-mitochondrial-proteins-and-pathways
+
+MitoCarta3 <- read.csv("/Users/xxx/Documents/xxxx/Databases/Mouse.MitoCarta3.0_summarised.csv") # replace with your path
+MitoCarta3_pathways <- read.csv("/Users/xxx/Documents/xxx/Databases/Mouse.MitoCarta3.0_pathways.csv") # replace with your path
 MitoCarta3_genes_mouse <- MitoCarta3$Symbol
 
 
@@ -84,7 +101,7 @@ message("+----------------------------------------------------------------------
 message("+                            load in Mootha genes                               ")
 message("+-------------------------------------------------------------------------------")
 
-genes_mootha <- read.csv("/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005/Input/Mootha_Gene_List.csv")
+genes_mootha <- read.csv("/Users/xxx/xxx/xxx/Input/Mootha_Gene_List.csv") # replace with your path
 
 homolog_genes <- human2mouse(genes_mootha$gene, db = homologene::homologeneData)
 genes_mootha$mouse_gene <- homolog_genes[match(genes_mootha$gene , homolog_genes$humanGene),]$mouseGene
@@ -102,7 +119,7 @@ message("+----------------------------------------------------------------------
 message("+                            load in Larsson genes                              ")
 message("+-------------------------------------------------------------------------------")
 
-Larsson_IMT_vs_ctrl <- read.csv("/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_003_001/Larsson_2021_IMT1/embr202153054-sup-0003-datasetev2_CRISPR-Cas9_Screen.csv")
+Larsson_IMT_vs_ctrl <- read.csv("/Users/xxx/Documents/xxx/xxx/Input/embr202153054-sup-0003-datasetev2_CRISPR-Cas9_Screen.csv") # replace with your path
 Larsson_IMT_vs_ctrl$significant <- ifelse(Larsson_IMT_vs_ctrl$logP > 1.3, TRUE, FALSE) # threshold 1.3 for padj 0.05 and 2 for padj 0.01
 Larsson_IMT_vs_ctrl <- Larsson_IMT_vs_ctrl[Larsson_IMT_vs_ctrl$significant == TRUE,]
 
@@ -310,15 +327,11 @@ total_genes <- length(unique( rownames(GetAssayData(Seurat_obj))))
 Gene_Proportions_in_Patterns <- annotation_Mootha_Larsson_DOWN_MARKERS[,c("Markers_size","Mootha_buffering" ,"Mootha_lethal","Larsson_susceptibility", "Larsson_resistance" )]
 
 
-# How to use phyper in R: HYPERGEOMETRIC TEST
-####### https://seqqc.wordpress.com/2019/07/25/how-to-use-phyper-in-r/
-
 GEN_SET_NAME <- "Mootha_buffering"
 GEN_SET_GENES <- genes_mootha_buff
 
 #GEN_SET_NAME <- "Larsson_susceptibility"
 #GEN_SET_GENES <- genes_larsson_sus
-
 
 
 hypergeometric_tests_list <- list()
@@ -333,24 +346,7 @@ for(CELL_TYPE in rownames(Gene_Proportions_in_Patterns)){
   Total= total_genes
   # Test for over-representation (enrichment)
   phyper(Overlap-1, group2, Total-group2, group1, lower.tail= FALSE)
-  #phyper(q=Overlap -1, m=group1, n=Total-group1, k=group2, lower.tail=FALSE)
   hypergeometric_tests_list[[count]] <- phyper(Overlap-1, group2, Total-group2, group1, lower.tail= FALSE)
-  # FIsher exact test
-  contingency.table <- data.frame(matrix(nrow=2, ncol=2))
-  rownames(contingency.table) <- c("predicted.target", "non.predicted")
-  colnames(contingency.table) <- c("class.member", "non.member")
-  contingency.table["predicted.target", "class.member"] <- Overlap ## Number of marked genes in the selection
-  contingency.table["predicted.target", "non.member"] <- group2 - Overlap ## Number of non-marked genes in the selection
-  contingency.table["non.predicted", "class.member"] <- group1 - Overlap ## Number of marked genes outside of the selection
-  contingency.table["non.predicted", "non.member"] <- Total - (group2 - Overlap) ## Number of non-marked genes in the selection
-  (contingency.row.sum <- apply(contingency.table, 1, sum))
-  (contingency.col.sum <- apply(contingency.table, 2, sum))
-  contingency.table.margins <- cbind(contingency.table, contingency.row.sum)
-  contingency.table.margins <- rbind(contingency.table.margins, apply(contingency.table.margins, 2, sum))
-  names(contingency.table.margins) <- c(names(contingency.table), "total")
-  rownames(contingency.table.margins) <- c(rownames(contingency.table), "total")
-  print(contingency.table.margins)
-  print(sum(contingency.table)) ## The value shoudl equal N, since every
   count <- count + 1
 }
 
@@ -386,8 +382,7 @@ mat_heatmap_hyper_cast <- mat_heatmap_hyper_cast[,c(2,3)]
 head(mat_heatmap_hyper_cast)
 
 
-ht_cols = circlize::colorRamp2( c(0,  0.051,  1 ), c( "green4",  "grey95", "grey95"), space = "RGB") #  v"#edf8fb", "#8c6bb1", 
-#ht_cols = circlize::colorRamp2( c(0,  0.051,  1 ), c( "#6e016b",  "grey95", "grey95"), space = "RGB") #  v"#edf8fb", "#8c6bb1", 
+ht_cols = circlize::colorRamp2( c(0,  0.051,  1 ), c( "green4",  "grey95", "grey95"), space = "RGB") 
 
 
 ht_celltype_DOWN = ComplexHeatmap:: Heatmap(mat_heatmap_hyper_cast,  col = ht_cols, name = "Downregulated",  row_title = "", column_title = "Downregulated", show_row_names = TRUE, show_column_names = TRUE, heatmap_legend_param = list(title = paste0("P.value (adj)"), legend_height = unit(3, "cm"), title_position = "topleft"), cluster_columns = FALSE, cluster_rows = FALSE , row_names_side ="left", column_names_rot = 0, width = unit(5, "cm"),column_names_side = "bottom", column_title_rot = 0, column_names_centered = TRUE) 
@@ -448,14 +443,14 @@ for (i in 1:length(venn_df)) {
 }
 
 venn_counts <- limma::vennCounts(venn_df)
-
 #VennDiagram::venn.diagram(venn_counts)
 
 venn_counts
 
 
 
-grid.newpage()                    # Create new plotting page
+grid.newpage()                   
+# Create new plotting page
 draw.triple.venn(area1 = sum(venn_df$m5019AG), 
                  area2 = sum(venn_df$m5024CT), 
                  area3 = sum(venn_df$gen_mod), 
@@ -657,12 +652,11 @@ ht_genes = ComplexHeatmap:: Heatmap(exprMat_ht3,  col = ht_colss, name = "Mootha
                                     row_names_side ="right", row_dend_side="left",column_names_side = "bottom",column_title_side ="top", 
                                     row_names_max_width = max_text_width(colnames(exprMat_ht)), bottom_annotation = ha,
                                     width = unit(23, "cm"),  height = unit(17, "cm"), row_names_gp = gpar(fontface="italic") ) 
-# width = unit(6, "cm"),  column_names_max_height=max_text_height(rownames(exprMat_ht)), cluster_column_slices = TRUE,
 ht_genes
 
 
 
-pdf(paste( "MBU_spb54_005__fig6", "ComplexHeatmap", Heatmap_name, "celltype_genotype_slot_scale.data", "FILT_diff", DIFF, "max", MIN_MAX , "v2.pdf", sep="_"), width=15, height=15) # "_celltype_regulators",
+pdf(paste( "MBU_spb54_005__fig6", "ComplexHeatmap", Heatmap_name, "celltype_genotype_slot_scale.data", "FILT_diff", DIFF, "max", MIN_MAX , "v2.pdf", sep="_"), width=15, height=15) 
 par(bg=NA)
 ht_genes
 dev.off()
@@ -688,9 +682,6 @@ for (i in names(Markers_celltype_genotype_list)){
   
   markers_table <- Markers_celltype_genotype_list[[i]]
   celltype_name <- i
-  #colnames(markers_table)[ colnames(markers_table) == "avg_log2FC"] <- "logfoldchanges"
-  #markers_table$Direction <- ifelse(markers_table$logfoldchanges > 0, "Overexpressed in mutator", "Underexpressed in mutator")
-  #genes_for_enrichment <- unique(markers_table[abs(markers_table$logfoldchanges) > l2fc_cutoff & markers_table$Direction =="Overexpressed in mutator",]$gene.name)
   genes_for_enrichment <- unique( rownames(markers_table[(markers_table$avg_log2FC) > l2fc_cutoff ,]) )
   
   print(length(genes_for_enrichment))
@@ -822,8 +813,8 @@ reducedTerms_BP <- reduceSimMatrix(simMatrix_BP,
 
 
 
-length(unique(reducedTerms_BP$parentTerm)) # 76
-length(unique(reducedTerms_BP$term)) # 760
+length(unique(reducedTerms_BP$parentTerm)) 
+length(unique(reducedTerms_BP$term)) 
 
 
 
@@ -878,7 +869,7 @@ f1 = colorRamp2( c(0, 0.0001, 0.05, 0.051, 0.5, 1), c("#006d2c",  "#2ca25f", "#6
 ht1 = Heatmap(as.matrix(GO_matrix3),  col = f1, name = GO_res_name,  row_title = "", column_title = "", show_row_names = TRUE, na_col= "lightgrey", heatmap_legend_param = list(title = "Significant terms", legend_height = unit(3, "cm"), title_position = "topleft"), cluster_columns = FALSE, cluster_rows = TRUE ,  row_dend_side = "right",column_split = split, row_names_side ="left", width = unit(ncol(GO_matrix3)/1.5, "cm"), height = unit(nrow(GO_matrix3)/1.5, "cm")) # width = unit(140, "cm"),
 print(ht1)
 
-pdf(paste( Project, "SEURAT_ComplexHeatmap_RRVGO_reduced", Threshold, GO_res_name, "l2fc", l2fc_cutoff, ".pdf", sep="_"), onefile=FALSE, height=(nrow(GO_matrix3)/2+6), width=ncol(GO_matrix3)/1.5) # /2 for wikipathways
+pdf(paste( Project, "SEURAT_ComplexHeatmap_RRVGO_reduced", Threshold, GO_res_name, "l2fc", l2fc_cutoff, ".pdf", sep="_"), onefile=FALSE, height=(nrow(GO_matrix3)/2+6), width=ncol(GO_matrix3)/1.5) 
 par(bg=NA)
 draw(ht1, row_title = " ", row_title_gp = gpar(col = "red"),  column_title = " ", column_title_side = "bottom", gap = unit(1, "cm"))
 dev.off()
@@ -888,7 +879,7 @@ ht1t = Heatmap(as.matrix(t(GO_matrix3)),  col = f1, name = GO_res_name,  row_tit
 print(ht1t)
 
 
-pdf(paste( Project, "SEURAT_ComplexHeatmap_RRVGO_reduced", Threshold, GO_res_name, "l2fc", l2fc_cutoff, "flipped.pdf", sep="_"), onefile=FALSE, width=(nrow(GO_matrix3)/2+6), height=ncol(GO_matrix3)/1.5) # /2 for wikipathways
+pdf(paste( Project, "SEURAT_ComplexHeatmap_RRVGO_reduced", Threshold, GO_res_name, "l2fc", l2fc_cutoff, "flipped.pdf", sep="_"), onefile=FALSE, width=(nrow(GO_matrix3)/2+6), height=ncol(GO_matrix3)/1.5) 
 par(bg=NA)
 draw(ht1t, row_title = " ", row_title_gp = gpar(col = "red"),  column_title = " ", column_title_side = "bottom", gap = unit(1, "cm"))
 dev.off()

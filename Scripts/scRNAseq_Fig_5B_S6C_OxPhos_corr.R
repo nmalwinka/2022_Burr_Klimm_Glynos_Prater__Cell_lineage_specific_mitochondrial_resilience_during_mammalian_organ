@@ -2,6 +2,19 @@
 rm(list=ls())
 gc()
 
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - Correlation of OxPhos genes                                            # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("ggplot2")
 library("ggrepel")
 library("cowplot")
@@ -9,11 +22,11 @@ library("Seurat")
 library("dplyr")
 library("ComplexHeatmap")
 theme_set(theme_cowplot())
-
+})
 
 
 Project        <- "MBU_spb54_005__OXPHOS_GENE_CORR"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/xxxx/xxx/xxx" # replace with your path
 setwd(baseDir)
 
 Seurat_obj <- readRDS(paste0(baseDir, "/Input/MBU_spb54_005_Flo_SCENIC-_harmony_matrix.su_SCT_batch_regressed_.Rds"))
@@ -38,8 +51,10 @@ message("+----------------------------------------------------------------------
 message("+                         Load in mitocarta                                     ")
 message("+-------------------------------------------------------------------------------")
 
-MitoCarta3 <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_summarised.csv")
-MitoCarta3_pathways <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_pathways.csv")
+# download Mitocarta v3 first from: https://www.broadinstitute.org/mitocarta/mitocarta30-inventory-mammalian-mitochondrial-proteins-and-pathways
+
+MitoCarta3 <- read.csv("/Users/xxx/Documents/xxx/Databases/Mouse.MitoCarta3.0_summarised.csv") # replace with your path
+MitoCarta3_pathways <- read.csv("/Users/xxx/Documents/xxx/Databases/Mouse.MitoCarta3.0_pathways.csv") # replace with your path
 MitoCarta3_genes_mouse <- unique(MitoCarta3$Symbol)
 
 MitoCarta_oxPhos <- MitoCarta3[grep("OXPHOS", MitoCarta3$MitoCarta3.0_MitoPathways), c("Symbol","EnsemblGeneID","MitoCarta3.0_MitoPathways","Synonyms","Description","MitoCarta3.0_SubMitoLocalization","Tissues")]
@@ -77,13 +92,8 @@ message("+----------------------------------------------------------------------
 
 
 expr_mat <- GetAssayData(Seurat_obj, assay = "SCT", slot = "data")
-expr_mat[1:5,1:5]
-
-
 
 selected_genes <- unique(Mito_oxphos_mlt$gene)
-
-
 
 
 
@@ -163,7 +173,7 @@ calc_GENE_corr_heatmap_for_celltype <- function(Seurat_obj_to_use=Seurat_obj, ce
   for (i in names(cor_list)){
     
     ht_name <- i
-    heatmaps_list[[count]] <- ComplexHeatmap::Heatmap(cor_list[[i]], col = f1, column_title = paste(celltype, ht_name),  name=ht_name, cluster_rows = TRUE,  cluster_columns = TRUE, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster=FALSE, heatmap_legend_param = list( title = "Correlation" )) # column_split = col_anno$Complex, row_split = col_anno$Complex , cluster_row_slices = FALSE,
+    heatmaps_list[[count]] <- ComplexHeatmap::Heatmap(cor_list[[i]], col = f1, column_title = paste(celltype, ht_name),  name=ht_name, cluster_rows = TRUE,  cluster_columns = TRUE, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster=FALSE, heatmap_legend_param = list( title = "Correlation" )) 
     count <- count + 1
   }
 
@@ -187,20 +197,20 @@ calc_GENE_corr_heatmap_for_celltype <- function(Seurat_obj_to_use=Seurat_obj, ce
     count <- count + 1
   }
 
-  ht1 <- ComplexHeatmap::Heatmap(cor_list[[1]], col = f1, column_title = "",  name="WT", cluster_rows = TRUE,  cluster_columns = TRUE, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster = FALSE, height = unit(10, "cm") , width = unit(10, "cm"), show_heatmap_legend = FALSE) # column_title = paste(celltype, "WT"),
+  ht1 <- ComplexHeatmap::Heatmap(cor_list[[1]], col = f1, column_title = "",  name="WT", cluster_rows = TRUE,  cluster_columns = TRUE, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster = FALSE, height = unit(10, "cm") , width = unit(10, "cm"), show_heatmap_legend = FALSE) 
   
   WT_col_order <- column_order(ht1)
   WT_row_order <- row_order(ht1)
 
-  ht2 <- ComplexHeatmap::Heatmap(cor_list[[2]], col = f1, column_title = "",  name="m.5024C>T", cluster_rows = F,  column_order = WT_col_order, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster = FALSE, show_heatmap_legend = FALSE, height = unit(10, "cm"), width = unit(10, "cm")) # column_title = paste(celltype, "m.5024C>T"), 
+  ht2 <- ComplexHeatmap::Heatmap(cor_list[[2]], col = f1, column_title = "",  name="m.5024C>T", cluster_rows = F,  column_order = WT_col_order, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster = FALSE, show_heatmap_legend = FALSE, height = unit(10, "cm"), width = unit(10, "cm")) 
   
-  ht3 <- ComplexHeatmap::Heatmap(cor_list[[3]], col = f1, column_title = "",  name="m.5019A>G", cluster_rows = F,  column_order = WT_col_order, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster = FALSE, show_heatmap_legend = FALSE,  height = unit(10, "cm"), width = unit(10, "cm")) #  column_title = paste(celltype, "m.5019A>G"),
+  ht3 <- ComplexHeatmap::Heatmap(cor_list[[3]], col = f1, column_title = "",  name="m.5019A>G", cluster_rows = F,  column_order = WT_col_order, show_row_names = FALSE, show_column_names = FALSE,  cluster_column_slices = FALSE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic"), column_names_gp = gpar(fontface = "italic"), clustering_distance_columns = "spearman", clustering_distance_rows = "spearman", top_annotation = ha, left_annotation = ha_side,  row_title_rot = 0, use_raster = FALSE, show_heatmap_legend = FALSE,  height = unit(10, "cm"), width = unit(10, "cm")) 
   
   ht_list = ht1 + ht2 + ht3
 
   pdf(paste( Project, "ComplexHeatmap_Oxphos", selected_genes_name, "cutoff", mean_expr_val, "", dataset_name , celltype,  "3_heatmaps",  "", ".pdf", sep="_"), width=15,height=5.5)
   par(bg=NA)
-  draw(ht1 + ht2 + ht3, row_title = " ", row_title_gp = gpar(col = "red"),  column_title = " ", column_title_side = "bottom", gap = unit(1.5, "cm")) # , annotation_legend_list = lgd1
+  draw(ht1 + ht2 + ht3, row_title = " ", row_title_gp = gpar(col = "red"),  column_title = " ", column_title_side = "bottom", gap = unit(1.5, "cm")) 
   dev.off()
 
   return(list(mean_correlations_list, cor_list, ht_list ))
@@ -224,6 +234,8 @@ ht_foregut          <- calc_GENE_corr_heatmap_for_celltype(Seurat_obj,"foregut",
 
 
 plot_binarised_barplot <- function(corr_list=NULL, celltype=NULL, mean_expr_val=NULL, mean_expr_cutoff=NULL, genes_used=NULL, min_corr = 0.5){
+  
+  selected_genes_name="oxphos"
   
   xWT_corr_vals   <- reshape2::melt(cbind(gene = rownames(corr_list[[2]]$WT), corr_list[[2]]$WT))
   x5024_corr_vals <- reshape2::melt(cbind(gene =rownames(corr_list[[2]]$`m.5024C>T`), corr_list[[2]]$`m.5024C>T`))
@@ -264,7 +276,7 @@ plot_binarised_barplot <- function(corr_list=NULL, celltype=NULL, mean_expr_val=
   df2$variable <- gsub( "_", " ", df2$variable)
   df2 <- df2[df2$variable != "negative correlations",]
 
-  plt <- ggplot(data=df2, aes(x=mouse, y=value, fill = variable)) + geom_bar(stat="identity", position=position_dodge()) + xlab("") + ylab("Sum binarised correlations")  + scale_fill_manual(values = c("seagreen", "violetred")) + theme(legend.position="none") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) # ggtitle(paste(celltype, ":: \nbinarised corr. cut-off ", min_corr , sep = " "))  + ggtitle(paste(celltype))
+  plt <- ggplot(data=df2, aes(x=mouse, y=value, fill = variable)) + geom_bar(stat="identity", position=position_dodge()) + xlab("") + ylab("Sum binarised correlations")  + scale_fill_manual(values = c("seagreen", "violetred")) + theme(legend.position="none") + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
   
   pdf(paste( Project, "Oxphos_barplot", celltype, selected_genes_name, "SumBinarisedGeneCorrelations", "cutoff", mean_expr_val, "mean_expr_cutoff", min_corr, "",   "", ".pdf", sep="_"), width=3,height=4)
   par(bg=NA)
@@ -281,8 +293,8 @@ plot_binarised_barplot <- function(corr_list=NULL, celltype=NULL, mean_expr_val=
   return(plt)  
 }
 
-selected_genes_name="oxphos"
-min_corr_val <- 0.6
+
+min_corr_val <- 0.5
 
 barplot_cardiac <- plot_binarised_barplot(corr_list=ht_cardiac, celltype="cardiac",  min_corr=min_corr_val)
 barplot_mixedmeso <- plot_binarised_barplot(corr_list=ht_mixed_mesoderm, celltype="mixed_mesoderm",   min_corr=min_corr_val)

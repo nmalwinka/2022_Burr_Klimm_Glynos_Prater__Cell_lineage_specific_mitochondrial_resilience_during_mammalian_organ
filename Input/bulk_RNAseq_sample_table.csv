@@ -1,0 +1,21 @@
+,sample_id,condition,Heteroplasmy_group,clone,Barcode,run
+35,A10_s_1,High Glucose DMEM,highHeteroplasmy,Clone_83,A10,1
+71,A10_s_2,High Glucose DMEM,highHeteroplasmy,Clone_83,A10,2
+11,A7_s_1,High Glucose DMEM,lowHeteroplasmy,Clone_12,A7,1
+47,A7_s_2,High Glucose DMEM,lowHeteroplasmy,Clone_12,A7,2
+20,B8_s_1,High Glucose DMEM,lowHeteroplasmy,Clone_33,B8,1
+56,B8_s_2,High Glucose DMEM,lowHeteroplasmy,Clone_33,B8,2
+29,C9_s_1,High Glucose DMEM,highHeteroplasmy,Clone_59,C9,1
+65,C9_s_2,High Glucose DMEM,highHeteroplasmy,Clone_59,C9,2
+2,D10_s_1,High Glucose DMEM,lowHeteroplasmy,Clone_101,D10,1
+38,D10_s_2,High Glucose DMEM,lowHeteroplasmy,Clone_101,D10,2
+23,E8_s_1,High Glucose DMEM,highHeteroplasmy,Clone_44,E8,1
+59,E8_s_2,High Glucose DMEM,highHeteroplasmy,Clone_44,E8,2
+32,F9_s_1,High Glucose DMEM,highHeteroplasmy,Clone_62,F9,1
+68,F9_s_2,High Glucose DMEM,highHeteroplasmy,Clone_62,F9,2
+5,G10_s_1,High Glucose DMEM,lowHeteroplasmy,Clone_109,G10,1
+41,G10_s_2,High Glucose DMEM,lowHeteroplasmy,Clone_109,G10,2
+17,G7_s_1,High Glucose DMEM,highHeteroplasmy,Clone_26,G7,1
+53,G7_s_2,High Glucose DMEM,highHeteroplasmy,Clone_26,G7,2
+26,H8_s_1,High Glucose DMEM,lowHeteroplasmy,Clone_48,H8,1
+62,H8_s_2,High Glucose DMEM,lowHeteroplasmy,Clone_48,H8,2

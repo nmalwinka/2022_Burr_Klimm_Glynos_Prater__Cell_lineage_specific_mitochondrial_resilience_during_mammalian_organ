@@ -2,6 +2,19 @@
 rm(list=ls())
 gc()
 
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - integration with Tabula Muris                                          # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("DESeq2")
 library("ggplot2")
 library("ggrepel")
@@ -10,14 +23,17 @@ library("Seurat")
 library("dplyr")
 library("biomaRt")
 library("ComplexHeatmap")
+})
 theme_set(theme_cowplot())
 
+
 Project        <- "MBU_spb54_005__CELL_REV_adult_mouse_tabula_muris_"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005/"
-resDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005/CELL_REVISION_mouse_organogenesis/GSE132042_tabula_muris"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
+resDir        <- "/Users/xxx/Documents/xxx/xxx/xxx/GSE132042_tabula_muris" # replace with your path
 setwd(resDir)
 
 
+# get gene annotation from ensembl:
 ensembl    =  useEnsembl(biomart="ensembl", dataset="mmusculus_gene_ensembl")
 ensEMBL2id <- getBM(attributes=c('ensembl_gene_id', 'external_gene_name', 'description', "transcript_length"), mart = ensembl)
 
@@ -26,6 +42,8 @@ ensEMBL2id <- getBM(attributes=c('ensembl_gene_id', 'external_gene_name', 'descr
 message("+-------------------------------------------------------------------------------")
 message("+                         Load in mitocarta                                     ")
 message("+-------------------------------------------------------------------------------")
+
+# download Mitocarta v3 first from: https://www.broadinstitute.org/mitocarta/mitocarta30-inventory-mammalian-mitochondrial-proteins-and-pathways
 
 MitoCarta3 <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_summarised.csv")
 MitoCarta3_pathways <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_pathways.csv")
@@ -46,7 +64,7 @@ message("+----------------------------------------------------------------------
 message("+                              ok lets try bulk:                                ")
 message("+-------------------------------------------------------------------------------")
 
-meta <- read.csv("bulk/GSE132040_MACA_Bulk_metadata.csv", header = 1)
+meta <- read.csv("Input/GSE132040_MACA_Bulk_metadata.csv", header = 1)
 colnames(meta) <- c("Sample_name", "title" ,  "sample_classification" ,"organism" , "age", "dev_stage","sex" ,  "molecule", "desc" ,"processed.data.file" , "raw.file", "BioSample","Instrument.Model" )
 meta$tissue <- gsub( "_[0-9]{2}", "", meta$sample_classification)
 meta$tissue <- gsub( "_[0-9]", "", meta$tissue)
@@ -100,20 +118,17 @@ dds <- DESeq(ddsHTSeq)
 resultsNames(dds)
 colData(dds)
 
-#rld <- rlogTransformation(dds)
-rld <- vst(dds)
-
+rld <- rlogTransformation(dds)
 
 
 message("+-------------------------------------------------------------------------------")
 message("+                   Heatmap with isoforms                  ")
 message("+-------------------------------------------------------------------------------")
 
-# load in mat from Mouse Embryo!!
-
+# load in expression matrix from Mouse Embryo!!
 Seurat_obj <- readRDS(paste0(baseDir, "/Input/MBU_spb54_005_Flo_SCENIC-_harmony_matrix.su_SCT_batch_regressed_.Rds"))
 Seurat_obj_WT <- subset(Seurat_obj, mouse == "WT")
-rm(Seurat_obj)
+rm(Seurat_obj) # we are using only WT data so full dataset not needed.
 
 celltype_cols <- c( "amnion"="plum1", "mesoderm progenitors"="darkolivegreen1", "neural tube"="plum4","mixed mesoderm"="gold2", "neural crest"="purple4", "mid hindbrain"="orchid3","notochord"="grey28", "placodes"="red", "presomitic mesoderm"="darkolivegreen3", "forebrain"="mediumpurple2",  "pharyngeal mesoderm"="royalblue","foregut"="violetred3", "extraembryonic mesoderm"="steelblue3", "cardiac"="firebrick" , "somitic mesoderm"= "darkgreen",  "endothelial"="orange1", "mid hindgut"="violetred2", "blood"="black")
 
@@ -135,21 +150,18 @@ expr_mat2[1:5,1:5]
 summary(expr_mat2)
 
 
-library(DESeq2)
 dds <- readRDS("dds_bulk_1m_9m_all_tissues_Tabula_Muris.Rds")
 rld <- vst(dds)
 #rld <- readRDS("rld_9m_all_tissues.Rds")
 
 
-assay(rld)[1:10,1:10]
-dim(assay(rld))
 
+# select genes for plotting on the heatmaps. Select from 2 options:
 
+selected_genes <-  c("Cox6a2", "Cox7a1","Cox6a1", "Cox7a2","Cox8a","Cox8b","Cox8c", "Cox4i1", "Cox4i2", "Ndufa4","Ndufa4l2") # just selected isoforms
 
+selected_genes <- oxPhos_genes # all oxphos genes
 
-selected_genes <-  c("Cox6a2", "Cox7a1","Cox6a1", "Cox7a2","Cox8a","Cox8b","Cox8c", "Cox4i1", "Cox4i2", "Ndufa4","Ndufa4l2")
-
-selected_genes <- oxPhos_genes
 
 
 
@@ -157,7 +169,6 @@ selected_genes <- oxPhos_genes
 mat <- assay(rld)[rownames(assay(rld)) %in% selected_genes ,]
 
 mat_embryo <- expr_mat2[rownames(expr_mat2) %in% selected_genes,]
-
 
 dim(mat_embryo)
 mat_embryo <- mat_embryo[match(rownames(mat), rownames(mat_embryo)),]

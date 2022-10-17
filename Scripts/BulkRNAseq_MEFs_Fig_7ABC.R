@@ -2,20 +2,36 @@
 rm(list=ls())
 gc()
 
-library("ggplot2")
-library("ggrepel")
-library("cowplot")
-library("DESeq2")
-library("data.table")
-library("ggdendro")
-library("biomaRt")
-library("dplyr")
-library("RColorBrewer")
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: bulk RNA-seq in mouse MEFs clones - DESeq2 analysis                                              # 
+#                                                                                                            #
+##############################################################################################################
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("ggrepel")
+  library("cowplot")
+  library("DESeq2")
+  library("data.table")
+  library("ggdendro")
+  library("biomaRt")
+  library("dplyr")
+  library("RColorBrewer")
+  library("clusterProfiler")
+  library("org.Mm.eg.db")
+  library("enrichR")
+})
 
 
 
 Project        <- "MBU_spb54_006"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_006"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(baseDir)
 
 
@@ -80,25 +96,13 @@ colnames(countData) = gsub(".HGNFHDRX2.", "_", colnames(countData))
 rownames(countData) = countData$GeneID
 
 countData = countData[,c(2:ncol(countData))]
-
 countData[1:10,1:5]
-
 countData_filt <- countData[rowSums(countData) > 10,]
 
 sampleTable <- sampleTable[order(sampleTable$sample_id),]
 sampleTable$sample_id == colnames(countData_filt)
 
 
-
-message("+-------------------------------------------------------------------------------")
-message("+                        remove outlier clones                                  ")
-message("+-------------------------------------------------------------------------------")
-
-sampleTable <- sampleTable[sampleTable$clone != "Clone_17",]
-sampleTable <- sampleTable[sampleTable$clone != "Clone_114",]
-
-countData_filt <- countData_filt[, colnames(countData_filt) %in% sampleTable$sample_id]
-sampleTable$sample_id == colnames(countData_filt)
 
 
 
@@ -125,9 +129,6 @@ raw_counts <- counts(dds, normalized=FALSE)
 #write.csv(raw_counts,"raw_counts.csv", quote = FALSE )
 
 #saveRDS(dds, "MBU_spb54_006_outliersRM_dds_coll.Rds")
-#res <- results(dds, name = "group_highHeteroplasmy_HighGlucoseDMEM_vs_lowHeteroplasmy_HighGlucoseDMEM", alpha = 0.05)
-#head(res)
-#summary(res)
 
 rld = rlog(dds)
 vsd = vst(dds)
@@ -153,10 +154,7 @@ scores$Heteroplasmy <- paste0(scores$Heteroplasmy2, "%")
 plt_pca1 <- ggplot(scores, aes(x = PC1, y = PC2, col = condition )) + 
   geom_point(size = 4 , alpha = 0.6) + 
   xlab(pc1lab) + ylab(pc2lab) + theme_classic()+
-  #geom_encircle(alpha = 0.1, show.legend = FALSE, aes(fill=condition)) + 
-  #scale_shape_manual(name="run", values = c(1,2)) +
   scale_colour_manual(name="Condition", values = c("grey", "blue", "green")) +
-  #scale_fill_manual(name="Stage", values = c(col_1st, col_2nd)) +
   theme(text = element_text(size=elementTextSize)) + 
   theme(axis.text=element_text(size=14),axis.title=element_text(size=14))+
   coord_fixed(ratio = 1, xlim = c(-40,40), ylim = c(-40,40), expand = TRUE, clip = "on")
@@ -164,24 +162,17 @@ plt_pca1
 
 
 plt_pca2 <- ggplot(scores, aes(x = PC1, y = PC2, col = Heteroplasmy_group, label=Heteroplasmy )) + 
-  geom_point(size = 4 , alpha = 0.6) + #geom_text_repel(aes(label=sampleTable$Sample_short), col = "black") +
+  geom_point(size = 4 , alpha = 0.6) + 
   xlab(pc1lab) + ylab(pc2lab) + theme_classic()+
-  #geom_encircle(alpha = 0.1, show.legend = FALSE, aes(fill=condition)) + 
-  #scale_fill_manual(name="Stage", values = c(col_1st, col_2nd)) +
   scale_colour_manual(name="Heteroplasmy", values = c("darkolivegreen4","firebrick")) +
-  #scale_colour_manual(name="Heteroplasmy", values = c("blue","orange")) +
   theme(text = element_text(size=elementTextSize)) + geom_text_repel() +
   coord_fixed(ratio = 1, xlim = c(-45,45), ylim = c(-45,45), expand = TRUE, clip = "on")
 plt_pca2
-#mouse_cols <- c( "m.5024C>T"= "firebrick", "WT"="darkolivegreen4", "m.5019A>G"="dodgerblue4")
 
 
 plt_pca3 <- ggplot(scores, aes(x = PC1, y = PC2, col = group )) + 
-  geom_point(size = 4, alpha = 0.7 ) + #geom_text_repel(aes(label=sampleTable$Sample_short), col = "black") +
+  geom_point(size = 4, alpha = 0.7 ) + 
   xlab(pc1lab) + ylab(pc2lab) + theme_classic()+
-  #geom_line(aes(group = Barcode)) + 
-  #geom_encircle(alpha = 0.1, show.legend = FALSE, aes(fill=condition)) + 
-  #scale_fill_manual(name="Stage", values = c(col_1st, col_2nd)) +
   scale_colour_manual(name="Group", values = group_cols) +
   theme(text = element_text(size=elementTextSize)) + 
   coord_fixed(ratio = 1, xlim = c(-40,40), ylim = c(-40,40), expand = TRUE, clip = "on")
@@ -189,17 +180,12 @@ plt_pca3
 
 
 plt_pca4 <- ggplot(scores, aes(x = PC1, y = PC2, col = clone )) + 
-  geom_point(size = 4, alpha = 0.5 ) + #geom_text_repel(aes(label=sampleTable$Sample_short), col = "black") +
+  geom_point(size = 4, alpha = 0.5 ) + 
   xlab(pc1lab) + ylab(pc2lab) + theme_classic()+
-  #geom_encircle(alpha = 0.1, show.legend = FALSE, aes(fill=condition)) + 
-  #scale_fill_manual(name="Stage", values = c(col_1st, col_2nd)) +
-  #scale_colour_manual(name="Sequencing Run", values = c("red","yellow")) +
   theme(text = element_text(size=elementTextSize)) + 
   geom_text_repel(aes(label = clone), nudge_x = -1, nudge_y = 0.2, size = 2, max.overlaps = 60) +
   coord_fixed(ratio = 1, xlim = c(-40,40), ylim = c(-40,40), expand = TRUE, clip = "on")
 plt_pca4
-
-
 
 
 pdf(paste(Project,"QC", "CollapsedReplicates" , "PCA.pdf", sep="_"), onefile=FALSE, width=15, height=10) 
@@ -313,7 +299,6 @@ meanSdPlot(assay(ntd))
 meanSdPlot(assay(vsd))
 meanSdPlot(assay(rld))
 
-
 plotDispEsts(dds)
 
 
@@ -359,20 +344,22 @@ makeGeneCountPlot_v2 <- function(gene2plot,outdir) {
   t2$condition_short <- gsub( "High Glucose DMEM" , "HG", t2$condition_short)
   
   t2$samples <- paste( t2$heteroplasmy_short , rownames(t2))
-  #mouse_cols <- c( "m.5024C>T"= "firebrick", "WT"="darkolivegreen4", "m.5019A>G"="dodgerblue4")
   t2$heteroplasmy <- gsub( "Het", " het", t2$heteroplasmy)
   t2$heteroplasmy <- factor(t2$heteroplasmy, levels = c("low heteroplasmy" , "high heteroplasmy" ))
   het_cols <- c( "high heteroplasmy"= "firebrick", "low heteroplasmy"="darkolivegreen4")
   
   plt_box <- ggplot(t2, aes(x=heteroplasmy, y=count, fill=heteroplasmy)) + geom_boxplot() + 
-    scale_fill_manual(values = het_cols) +stat_summary(fun.y=mean, geom="point", shape=23, size=4) +geom_jitter(shape=16, position=position_jitter(0.2)) +  theme(legend.position="none") + #stat_summary(fun.data="mean_sdl", mult=1,geom="pointrange", color="black" ) +
+    scale_fill_manual(values = het_cols) +stat_summary(fun.y=mean, geom="point", shape=23, size=4) +
+    geom_jitter(shape=16, position=position_jitter(0.2)) +  theme(legend.position="none") + 
     theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ggtitle(paste( gene2plot, sep="")) +
     labs(x="", y = "Normalised counts") + ylim(0, max(t2$count)*1.1)
   
   
-  plt_bar <- ggplot(t2, aes(x=samples, y=count, fill=heteroplasmy)) + geom_bar(stat="identity", alpha=.75, position=position_dodge()) + 
+  plt_bar <- ggplot(t2, aes(x=samples, y=count, fill=heteroplasmy)) + 
+    geom_bar(stat="identity", alpha=.75, position=position_dodge()) + 
     scale_fill_manual(values = het_cols) +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) + ggtitle(paste(Project, " ::: ", gene2plot, sep=""))
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+    ggtitle(paste(Project, " ::: ", gene2plot, sep=""))
   
   pdf(paste(outdir, Project, "-DGE_", gene2plot, "_boxplot.pdf", sep=""),width=3,height=4, onefile=FALSE)
   par(bg=NA)
@@ -394,10 +381,8 @@ message("+----------------------------------------------------------------------
 message("+                                volcano plots                                  ")
 message("+-------------------------------------------------------------------------------")
 
-
 elementTextSize <- 8
 #results.df <- res_highGlucose.ann
-
 
 makeVolcano <- function(results.df){
   res_name <- deparse(substitute(results.df)) 
@@ -439,7 +424,6 @@ makeVolcano <- function(results.df){
 
 makeVolcano(res_highGlucose.ann)
 
-
 plotMA(res_highGlucose, ylim=c(-2,2))
 
 
@@ -451,18 +435,14 @@ message("+----------------------------------------------------------------------
 
 l2fc_cutoff <- 1
 
-
 rld_df <- as.data.frame(assay(rld))
 rld_df_meanCentered <- rld_df - rowMeans(rld_df)   
 
 rld_df_meanCentered$ensembl_gene_id <- rownames(rld_df_meanCentered)
 rld_df_meanCentered$external_gene_name <- ensEMBL2id[match(rld_df_meanCentered$ensembl_gene_id, ensEMBL2id$ensembl_gene_id),]$external_gene_name
 
-
 mat <- rld_df_meanCentered
-
 mat <- rld_df_meanCentered[rld_df_meanCentered$external_gene_name %in% res_highGlucose.ann[res_highGlucose.ann$padj < 0.05 & abs(res_highGlucose.ann$log2FoldChange) > l2fc_cutoff,]$external_gene_name , ]
-
 
 
 mat <- mat[!duplicated(mat$external_gene_name),]
@@ -473,8 +453,6 @@ mat <- mat[,-c(ncol(mat), ncol(mat)-1)]
 sampleTable_coll <- sampleTable_coll[order(sampleTable_coll$Heteroplasmy2),]
 sampleTable_coll <- sampleTable_coll[order(sampleTable_coll$condition),]
 mat2 <- mat[, match(sampleTable_coll$Barcode, colnames(mat))]
-
-#sampleTable_coll$group <- levels(droplevels(sampleTable_coll$group))
 
 ht_anno <- data.frame(sample= colnames(mat2))
 ht_anno$condition <- sampleTable_coll[match(ht_anno$sample, sampleTable_coll$Barcode),]$condition
@@ -488,10 +466,8 @@ ht_anno$group <- as.character(ht_anno$group)
 ht_anno$group <- gsub( "Heteroplasmy_HighGlucoseDMEM", " Heteroplasmy", ht_anno$group)
 ht_anno$group <- factor(ht_anno$group, levels = c("low Heteroplasmy","high Heteroplasmy"))
 group_cols3 <-  c("low Heteroplasmy"="darkolivegreen4", "high Heteroplasmy"="firebrick" )
-#mouse_cols <- c( "m.5024C>T"= "firebrick", "WT"="darkolivegreen4", "m.5019A>G"="dodgerblue4")
 
 
-#ha = HeatmapAnnotation(Group = ht_anno$group, Heteroplasmy=anno_points(ht_anno$Heteroplasmy, pch = 16, size = unit(0.8, "mm")) , col = list(Group = group_cols),  show_annotation_name = TRUE)
 ha_top = HeatmapAnnotation(Heteroplasmy=anno_points(ht_anno$Heteroplasmy, pch = 16, size = unit(3, "mm")),  show_annotation_name = TRUE)
 ha_bottom = HeatmapAnnotation(Group = ht_anno$group, col = list(Group = group_cols3),  show_annotation_name = TRUE)
 
@@ -514,8 +490,6 @@ message("+----------------------------------------------------------------------
 message("+                 enrichR                                          ")
 message("+-------------------------------------------------------------------------------")
 
-library(enrichR)
-
 enrichR_DB <- as.data.frame(listEnrichrDbs())
 db <- c("WikiPathways_2019_Mouse", "GO_Biological_Process_2018", "KEGG_2019_Mouse","GO_Cellular_Component_2018", "GO_Molecular_Function_2018","Reactome_2016")
 websiteLive <- TRUE
@@ -527,21 +501,12 @@ resSig_df <- resSig_highGlucose
 DEGs <- resSig_df[(resSig_df$log2FoldChange) > l2fc_cutoff,]$external_gene_name
 
 enrich_res <- enrichr(DEGs, databases = db )
-enrich_res[[1]][enrich_res[[1]]$Adjusted.P.value < 0.05,c(1,2,4,9)]
-enrich_res[[2]][enrich_res[[2]]$Adjusted.P.value < 0.05,c(1,2,4,9)] # 
-enrich_res[[3]][enrich_res[[3]]$Adjusted.P.value < 0.05,c(1,2,4,9)]
-enrich_res[[4]][enrich_res[[4]]$Adjusted.P.value < 0.05,c(1,2,4,9)]
-enrich_res[[5]][enrich_res[[5]]$Adjusted.P.value < 0.05,c(1,2,4,9)]
-
-
 enrich_WP <- enrich_res[[1]][enrich_res[[1]]$Adjusted.P.value < 0.05,]
 enrich_GOBP <- enrich_res[[2]][enrich_res[[2]]$Adjusted.P.value < 0.05,]
 enrich_Kegg <- enrich_res[[3]][enrich_res[[3]]$Adjusted.P.value < 0.05,]
 enrich_GOCC <- enrich_res[[4]][enrich_res[[4]]$Adjusted.P.value < 0.05,]
 enrich_GOMF <- enrich_res[[5]][enrich_res[[5]]$Adjusted.P.value < 0.05,]
 enrich_React <- enrich_res[[6]][enrich_res[[6]]$Adjusted.P.value < 0.05,]
-
-
 
 enrich_WP$gene_count <- as.numeric(as.character(gsub( "\\/.*", "", enrich_WP$Overlap)))
 enrich_WP$Description <- gsub( " WP.*", "", enrich_WP$Term)
@@ -568,7 +533,6 @@ p_WP_mlt <- ggplot(enrich_WP, aes(x=reorder(Description, -Adjusted.P.value), y=g
   scale_alpha_continuous( range = c(0.5, 1))
 
 
-
 pdf(paste( Project,  "___WP_barplots_HighGlucose", "markers_l2fc1", ".pdf", sep="_"), width=8,height=6) # "_celltype_regulators",
 par(bg=NA)
 p_WP_mlt
@@ -581,10 +545,9 @@ message("+----------------------------------------------------------------------
 message("+                           Fig 3A   KEGG                                       ")
 message("+-------------------------------------------------------------------------------")
 
-library(clusterProfiler)
-library(org.Mm.eg.db)
 
-#ensembl    =  useEnsembl(biomart="ensembl", dataset="mmusculus_gene_ensembl")
+
+ensembl    =  useEnsembl(biomart="ensembl", dataset="mmusculus_gene_ensembl")
 ensEMBL2id <- getBM(attributes=c('ensembl_gene_id', 'external_gene_name', 'entrezgene_id', 'description'), mart = ensembl) 
 
 
@@ -603,21 +566,19 @@ CalculateKeggEnrichment <- function(RESULTS_TABLE, LOG2FOLDCHANGE=1 ){
   head(summary(kk_all))
   kk_all <- setReadable(kk_all, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
   
-  kk_down <- enrichKEGG(names(foldchanges[foldchanges<0]), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg") # universe = unique(as.character(ALL_GENES_UNIVERSE))
+  kk_down <- enrichKEGG(names(foldchanges[foldchanges<0]), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg") 
   head(summary(kk_down))
   kk2_down <- setReadable(kk_down, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
   kk_res_down <- as.data.frame(kk2_down)
   kk_res_down$direction <- "down"
   
-  kk_up <- enrichKEGG(names(foldchanges[foldchanges>0]), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg", ) # universe = unique(as.character(ALL_GENES_UNIVERSE))
+  kk_up <- enrichKEGG(names(foldchanges[foldchanges>0]), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg", ) 
   head(summary(kk_up))
   kk2_up <- setReadable(kk_up, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
   kk_res_up <- as.data.frame(kk2_up)
   kk_res_up$direction <- "up"
   
-  
   kk_results <- rbind(kk_res_up, kk_res_down)
-  
   return(as.data.frame(kk_all))
 }
 
@@ -625,13 +586,6 @@ kk_all_HG <- CalculateKeggEnrichment(resSig_highGlucose, LOG2FOLDCHANGE=0.6)
 
 
 selected_kegg <- c("mmu04550","mmu03320","mmu04350","mmu04151","mmu04020","mmu04974","mmu04514","mmu04550" ,"mmu04015", "mmu04010",  "mmu00350", "mmu04144",  "mmu04310", "mmu04390", "mmu00260","mmu04060","mmu04979","mmu01521","mmu00480","mmu04923") 
-
-
-#col_UP <- "red"
-#col_DOWN <- "blue"
-#kk_results <- kk_all_Markers_A5019G
-#RESULTS_TABLE <- Markers_A5019G
-
 
 
 
@@ -678,16 +632,11 @@ PlotKeggPathways <- function(kk_results, RESULTS_TABLE, selected_kegg, NO_OF_PAT
 }
 
 
-plt2 <- PlotKeggPathways(kk_all_HG, resSig_highGlucose, selected_kegg, NO_OF_PATHWAYS_TO_PLOT = 10, col_DOWN="firebrick",col_UP="darkolivegreen4")
-
-
-
-pdf(paste( Project,  "___KEGG_barplots_HighGlucose", "markers_l2fc1", ".pdf", sep="_"), width=9,height=4) # "_celltype_regulators",
+pdf(paste( Project,  "___KEGG_barplots_HighGlucose", "markers_l2fc1", ".pdf", sep="_"), width=9,height=4)
 par(bg=NA)
-plt2
+PlotKeggPathways(kk_all_HG, resSig_highGlucose, selected_kegg, NO_OF_PATHWAYS_TO_PLOT = 10, col_DOWN="firebrick",col_UP="darkolivegreen4")
 dev.off()
 
-#mouse_cols <- c( "m.5024C>T"= "firebrick", "WT"="darkolivegreen4", "m.5019A>G"="dodgerblue4")
 
 
 

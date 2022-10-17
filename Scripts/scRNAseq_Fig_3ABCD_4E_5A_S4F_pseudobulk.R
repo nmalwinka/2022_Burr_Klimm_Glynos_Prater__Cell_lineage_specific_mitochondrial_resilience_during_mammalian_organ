@@ -2,32 +2,52 @@
 rm(list=ls())
 gc()
 
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - pseudobulk analysis                                                    # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("RColorBrewer")
 library("ggplot2")
 library("ggrepel")
 library("cowplot")
 library("Seurat") 
 library("biomaRt")
-
+})
 
 
 Project        <- "MBU_spb54_005__fig__PSEUDOBULK"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(baseDir)
 
+# read in Seurat scRNA-seq object:
 Seurat_obj <- readRDS(paste0(baseDir, "/Input/MBU_spb54_005_Flo_SCENIC-_harmony_matrix.su_SCT_batch_regressed_.Rds"))
+
+
+
+
+
+message("+-------------------------------------------------------------------------------")
+message("+                            colour schemes                                     ")
+message("+-------------------------------------------------------------------------------")
 
 mouse_cols <- c( "m.5024C>T"= "firebrick", "WT"="darkolivegreen4", "m.5019A>G"="dodgerblue4")
 
+celltype_cols <- c( "amnion"="plum1", "mesoderm progenitors"="darkolivegreen1", "neural tube"="plum4","mixed mesoderm"="gold2", "neural crest"="purple4", "mid hindbrain"="orchid3","notochord"="grey28", "placodes"="red", "presomitic mesoderm"="darkolivegreen3", "forebrain"="mediumpurple2",  "pharyngeal mesoderm"="royalblue","foregut"="violetred3", "extraembryonic mesoderm"="steelblue3", "cardiac"="firebrick" , "somitic mesoderm"= "darkgreen",  "endothelial"="orange1", "mid hindgut"="violetred2", "blood"="black")
 
 
 
 message("+-------------------------------------------------------------------------------")
 message("+                       add extra labeling                                      ")
 message("+-------------------------------------------------------------------------------")
-
-
-celltype_cols <- c( "amnion"="plum1", "mesoderm progenitors"="darkolivegreen1", "neural tube"="plum4","mixed mesoderm"="gold2", "neural crest"="purple4", "mid hindbrain"="orchid3","notochord"="grey28", "placodes"="red", "presomitic mesoderm"="darkolivegreen3", "forebrain"="mediumpurple2",  "pharyngeal mesoderm"="royalblue","foregut"="violetred3", "extraembryonic mesoderm"="steelblue3", "cardiac"="firebrick" , "somitic mesoderm"= "darkgreen",  "endothelial"="orange1", "mid hindgut"="violetred2", "blood"="black")
 
 Seurat_obj@meta.data$celltype2 <- Seurat_obj@meta.data$celltype
 Seurat_obj@meta.data$celltype2 <- gsub( "Hind", " hind", Seurat_obj@meta.data$celltype2)
@@ -99,6 +119,8 @@ All_mouse_markers <- rbind(Markers_A5019G, Markers_C5024T)
 message("+-------------------------------------------------------------------------------")
 message("+                     load in mitocarta genes                                   ")
 message("+-------------------------------------------------------------------------------")
+
+# download Mitocarta v3 first from: https://www.broadinstitute.org/mitocarta/mitocarta30-inventory-mammalian-mitochondrial-proteins-and-pathways
 
 MitoCarta3 <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_summarised.csv")
 MitoCarta3_pathways <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_pathways.csv")
@@ -209,14 +231,14 @@ vln5  <- VlnPlot(Seurat_obj, features = selected_genes[5], cols = mouse_cols, sl
 vln6  <- VlnPlot(Seurat_obj, features = selected_genes[6], cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank()) +  geom_boxplot(width=0.1) + ggtitle( selected_genes[1]) +  labs(y="",  x = selected_genes[6])
 
 
-pdf(paste( Project, "4E_VlnPlot_data","2.pdf", sep="_"), width=14,height=3.5) # "_celltype_regulators",
+pdf(paste( Project, "4E_VlnPlot_data","2.pdf", sep="_"), width=14,height=3.5)
 par(bg=NA)
 plot_grid(vln1,vln2,vln3,vln4,vln5,vln6 , ncol = 6)
 dev.off()
 
-vln_grid  <- VlnPlot(Seurat_obj, features = selected_genes, cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE, ncol = 6) +  geom_boxplot(width=0.1) #+ labs(x = "")   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank())  +
+vln_grid  <- VlnPlot(Seurat_obj, features = selected_genes, cols = mouse_cols, slot = SLOT, assay = "SCT", pt.size= PT_SIZE, ncol = 6) +  geom_boxplot(width=0.1) 
 
-pdf(paste( Project, "4E_VlnPlot_data","2.pdf", sep="_"), width=14,height=4) # "_celltype_regulators",
+pdf(paste( Project, "4E_VlnPlot_data","2.pdf", sep="_"), width=14,height=4) 
 par(bg=NA)
 vln_grid
 dev.off()
@@ -378,18 +400,13 @@ Markers_mito <-  All_mouse_markers[abs(All_mouse_markers$avg_log2FC) > l2fc_cuto
 
 
 selected_genes <- unique(Markers_mito$gene)
-selected_genes <- unique(c(selected_genes, "mt-Rnr1", "mt-Rnr2"))
+selected_genes <- unique(c(selected_genes, "mt-Rnr1", "mt-Rnr2")) # adding 2 mitochondrial genes relevant to the study
 
 
 expr_mat <- GetAssayData(Seurat_obj, assay = "SCT", slot = "data")
-expr_mat[1:5,1:5]
-
-
 expr_mat <- as.matrix(expr_mat[rownames(expr_mat) %in% selected_genes,])
 mat <- as.data.frame(t(scale(t(expr_mat))))
-min(mat)
-max(mat)
-mat[1:5,1:5]
+
 
 length(selected_genes) == nrow(expr_mat)
 mat <- mat[match(selected_genes,  rownames(expr_mat)),]
@@ -405,7 +422,6 @@ col_split$mouse <- factor(col_split$mouse, levels = c("WT","m.5024C>T","m.5019A>
 
 ha = HeatmapAnnotation(Mouse = col_split$mouse, col = list(Mouse = mouse_cols))
 
-set.seed(14)
 f1 = circlize::colorRamp2( c(-1.5, 0, 1.5), c("blue","white","red"), space = "LUV") 
 ht1 <- ComplexHeatmap::Heatmap(mat,col = f1, name="Expression", cluster_rows = TRUE,  cluster_columns = FALSE, show_row_names = TRUE, show_column_names = FALSE, column_split = col_split$mouse, top_annotation = ha, cluster_column_slices = TRUE, row_title_side = "left", row_names_side = "left" , row_names_gp = gpar(fontface = "italic")) 
 
@@ -424,12 +440,12 @@ message("+----------------------------------------------------------------------
 message("+                           Fig 3A   KEGG                                       ")
 message("+-------------------------------------------------------------------------------")
 
-
+# gen gene annotation from ensembl:
 ensembl    =  useEnsembl(biomart="ensembl", dataset="mmusculus_gene_ensembl")
 ensEMBL2id <- getBM(attributes=c('ensembl_gene_id', 'external_gene_name', 'entrezgene_id', 'description'), mart = ensembl)
 
 
-
+# function for Kegg enrichment:
 CalculateKeggEnrichment <- function(RESULTS_TABLE, LOG2FOLDCHANGE=0.25 ){
   Kegg_genes <- na.omit(RESULTS_TABLE)
   Kegg_genes$Gene_ID <- ensEMBL2id[match( Kegg_genes$gene, ensEMBL2id$external_gene_name),]$entrezgene_id
@@ -442,24 +458,19 @@ CalculateKeggEnrichment <- function(RESULTS_TABLE, LOG2FOLDCHANGE=0.25 ){
   head(foldchanges)
   
   kk_all <- enrichKEGG(names(foldchanges), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg")
-  #head(summary(kk_all))
   kk_all <- setReadable(kk_all, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
   
   kk_down <- enrichKEGG(names(foldchanges[foldchanges<0]), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg") 
-  #head(summary(kk_down))
   kk2_down <- setReadable(kk_down, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
   kk_res_down <- as.data.frame(kk2_down)
   kk_res_down$direction <- "down"
   
   kk_up <- enrichKEGG(names(foldchanges[foldchanges>0]), organism="mmu", pvalueCutoff=0.05, pAdjustMethod="BH", qvalueCutoff=0.05, keyType = "kegg", ) 
-  #head(summary(kk_up))
   kk2_up <- setReadable(kk_up, OrgDb = org.Mm.eg.db, keyType = "ENTREZID")
   kk_res_up <- as.data.frame(kk2_up)
   kk_res_up$direction <- "up"
   
-  
   kk_results <- rbind(kk_res_up, kk_res_down)
-  
   return(as.data.frame(kk_all))
 }
 
@@ -522,13 +533,9 @@ PlotKeggPathways <- function(kk_results, RESULTS_TABLE, selected_kegg, NO_OF_PAT
 selected_kegg <- c("mmu03018","mmu05020","mmu03013","mmu04530","mmu05208","mmu05016" ,"mmu04110", "mmu04120",  "mmu00190", "mmu05010",  "mmu01200", "mmu03008", "mmu00020","mmu04141","mmu04144","mmu05022","mmu03010","mmu03040","mmu03050","mmu03015","mmu00480","mmu00010","mmu04550","mmu04810","mmu00970","mmu04520")
 
 
-
 plt1 <- PlotKeggPathways(kk_all_Markers_A5019G_vs_WT, Markers_A5019G, selected_kegg, NO_OF_PATHWAYS_TO_PLOT = 13, col_DOWN="dodgerblue4",col_UP="darkolivegreen4", plot_title="WT vs m.5019A>G")
 plt2 <- PlotKeggPathways(kk_all_Markers_C5024T_vs_WT, Markers_C5024T, selected_kegg, NO_OF_PATHWAYS_TO_PLOT = 13, col_DOWN="firebrick",col_UP="darkolivegreen4", plot_title="WT vs m.5024C>T")
 plt3 <- PlotKeggPathways(kk_all_Markers_C5024T_vs_A5019G, Markers_C5024T_vs_A5019G, selected_kegg, NO_OF_PATHWAYS_TO_PLOT = 13, col_DOWN="firebrick",col_UP="dodgerblue4", plot_title="m.5019A>G vs m.5024C>T")
-
-cowplot::plot_grid(plt1,plt2,plt3, ncol=3)
-
 
 
 pdf(paste( Project, "SCTBatchRegr","fig_3A", "___KEGG_barplots_", "markers_l2fc0.3", "v2.pdf", sep="_"), width=22,height=5)

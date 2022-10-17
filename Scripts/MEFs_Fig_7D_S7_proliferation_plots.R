@@ -2,14 +2,30 @@
 rm(list=ls())
 gc()
 
-library("ggplot2")
-library("ggrepel")
-library("cowplot")
-library("dplyr")
-theme_set(theme_cowplot())
-library(gridExtra)
-library(ggchromatic) # devtools::install_github("teunbrand/ggchromatic")
-library(ggpubr)
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: bulk RNA-seq in mouse MEFs clones - proliferation plots                                          # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
+  library("ggplot2")
+  library("ggrepel")
+  library("cowplot")
+  library("dplyr")
+  theme_set(theme_cowplot())
+  library(gridExtra)
+  library(ggchromatic) 
+  library(ggpubr)
+})
+  
+  
 
 
 
@@ -18,7 +34,7 @@ experiment_no <- "expt1_2" #  "expt1" "expt2" "expt1_2"
 
 
 Project        <- "MBU_spb54_005_MEF_5024_siRNA_plots_"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(baseDir)
 
 
@@ -87,22 +103,11 @@ data_summary <- function(data, varname, groupnames){
 }
 
 
-# For the very first experiment I calculated the slope of the curve between roughly 35% and 70% confluency and used this to give a ‘doubling time’, similar to your suggestion
 
-clones_to_plot <- "all" # "all" "3_lowest", "lowest_clone_only"
 
 plot_per_sirna <- function(siRNA_target){
   
   df <- siRNA_df[siRNA_df$siRNA %in% c(siRNA_target, "Mock", "NT"), c("Clone","Heteroplasmy","Heteroplasmy_bin", "siRNA","well","Elapsed","Mean_Confluency", "SEM"  )]
-  #plt1 <- ggplot(data=df, aes(x=Elapsed, y=Mean_Confluency, group=Clone, color=Heteroplasmy )) +
-  #  geom_line()+ geom_errorbar(aes(ymin=Mean_Confluency-SEM, ymax=Mean_Confluency+SEM), width=.1) + geom_point()
-  
-  if(clones_to_plot=="3_lowest"){
-    df <- df[!df$Clone %in% c("clone_48","clone_109", "clone_12"),]
-  }else if(clones_to_plot=="lowest_clone_only"){
-    df <- df[!df$Clone %in% c("clone_48","clone_109", "clone_12","clone_17", "clone_33"),]
-  }
-  #df <- df[df$Clone != "clone_48",]
   
   df$group <- paste(df$Heteroplasmy_bin , df$siRNA)
   if(experiment_no == "expt1_2"){
@@ -117,15 +122,13 @@ plot_per_sirna <- function(siRNA_target){
   df_summarised$sd[is.na(df_summarised$sd)] <- 0
   
   plt2 <- ggplot(data=df_summarised, aes(x=Elapsed, y=Mean_Confluency, group=group, color=group, shape= Heteroplasmy_bin)) +
-    geom_line()+ geom_errorbar(aes(ymin=Mean_Confluency-se, ymax=Mean_Confluency+se), width=.1) + geom_point() + ggtitle(siRNA_target)+ labs(x="Time (h)")   + scale_color_manual(values=c("thistle",'#999999', "seagreen3","green3", "indianred", "red"))  # '#999999','#E69F00',"red"
+    geom_line()+ geom_errorbar(aes(ymin=Mean_Confluency-se, ymax=Mean_Confluency+se), width=.1) + geom_point() + ggtitle(siRNA_target)+ labs(x="Time (h)")   + scale_color_manual(values=c("thistle",'#999999', "seagreen3","green3", "indianred", "red"))  
   plt2
   
   return(plt2)
 }
 
-
 unique(siRNA_df$siRNA)
-
 
 plt_Gapdh <- plot_per_sirna("Gapdh")
 plt_E2f3 <- plot_per_sirna("E2f3")
@@ -136,7 +139,6 @@ plt_Maz <- plot_per_sirna("Maz")
 plt_Bclaf1 <- plot_per_sirna("Bclaf1")
 
 common_legend <- get_legend(plt_Gapdh)
-
 
 
 pdf(paste(Project, "siRNA",  "lineplots", clones_to_plot, experiment_no, "RMoutliers" ,".pdf", sep="_"), onefile=FALSE, width=12, height=6)

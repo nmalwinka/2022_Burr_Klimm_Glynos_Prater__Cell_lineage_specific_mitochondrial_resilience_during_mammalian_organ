@@ -2,21 +2,34 @@
 rm(list=ls())
 gc()
 
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - Wildtype embryos                                                       # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("ggplot2")
 library("SCENIC")
 library("Seurat")  
 library("ggchromatic")
 library("ggtree")
 library("patchwork") 
+})
 
 
 Project        <- "MBU_spb54_005_Fig1"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(baseDir)
-dbDir         <- "/Users/mn367/Documents/MBU-Projects/Databases/Mouse_cisTarget_databases"
-list.files(dbDir)
 
 
+# load in Seurat object with whole mouse dataset
 Seurat_obj <- readRDS(paste0(baseDir, "/Input/MBU_spb54_005_Flo_SCENIC-_harmony_matrix.su_SCT_batch_regressed_.Rds"))
 
 
@@ -27,7 +40,6 @@ Seurat_obj[["percent.mt"]] <- PercentageFeatureSet(Seurat_obj, pattern = "^mt-")
 message("+-------------------------------------------------------------------------------")
 message("+                       add extra labeling                                      ")
 message("+-------------------------------------------------------------------------------")
-
 
 celltype_cols <- c( "amnion"="plum1", "mesoderm progenitors"="darkolivegreen1", "neural tube"="plum4","mixed mesoderm"="gold2", "neural crest"="purple4", "mid hindbrain"="orchid3","notochord"="grey28", "placodes"="red", "presomitic mesoderm"="darkolivegreen3", "forebrain"="mediumpurple2",  "pharyngeal mesoderm"="royalblue","foregut"="violetred3", "extraembryonic mesoderm"="steelblue3", "cardiac"="firebrick" , "somitic mesoderm"= "darkgreen",  "endothelial"="orange1", "mid hindgut"="violetred2", "blood"="black")
 
@@ -76,6 +88,8 @@ message("+----------------------------------------------------------------------
 message("+                         Load in mitocarta                                     ")
 message("+-------------------------------------------------------------------------------")
 
+# download Mitocarta v3 first from: https://www.broadinstitute.org/mitocarta/mitocarta30-inventory-mammalian-mitochondrial-proteins-and-pathways
+
 MitoCarta3 <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_summarised.csv")
 MitoCarta3_pathways <- read.csv("/Users/mn367/Documents/MBU-Projects/Databases/Mouse.MitoCarta3.0_pathways.csv")
 MitoCarta3_genes_mouse <- unique(MitoCarta3$Symbol)
@@ -96,16 +110,14 @@ message("-----------------------------------------------------------------------
 message("+                         Fig 1 C - UMAP                                        ")
 message("+-------------------------------------------------------------------------------")
 
-#  UMAP With cell types- just WT samples  
+#  UMAP With cell types - just WT samples  
 Seurat_obj_WT <- subset(Seurat_obj, mouse == "WT")
-
-plt <- DimPlot(Seurat_obj_WT, reduction = "umap", group.by = "celltype2", pt.size = 1, cols = celltype_cols, label= FALSE, label.size = 5, repel = TRUE)   + coord_fixed(ratio = 1) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank())
-plt
+rm(Seurat_obj)
 
 
 pdf(paste0( Project, "_C__UMAP_WT_", "celltype", "_HARMONY_SCT_batch_regressed", "_no_labs", ".pdf"), onefile=FALSE, width=5, height=4) 
 par(bg=NA)
-plt
+DimPlot(Seurat_obj_WT, reduction = "umap", group.by = "celltype2", pt.size = 1, cols = celltype_cols, label= FALSE, label.size = 5, repel = TRUE)   + coord_fixed(ratio = 1) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL) + theme(legend.title = element_blank(), legend.position="none", plot.title = element_blank())
 dev.off()
 
 
@@ -115,23 +127,15 @@ message("+                           Fig S4 E & D                               
 message("+-------------------------------------------------------------------------------")
 
 
-plt <- DimPlot(Seurat_obj, reduction = "umap", group.by = "celltype2", pt.size = 1, cols = celltype_cols, label= FALSE, label.size = 5, repel = TRUE)   + coord_fixed(ratio = 1) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL) + theme( plot.title = element_blank()) # legend.title = element_blank(), legend.position="none",
-plt
-
-
 pdf(paste0( Project, "_S4E__UMAP_ALL_", "celltype", "_HARMONY_SCT_batch_regressed", "_with_legend", ".pdf"), onefile=FALSE, width=7, height=4) 
 par(bg=NA)
-plt
+DimPlot(Seurat_obj, reduction = "umap", group.by = "celltype2", pt.size = 1, cols = celltype_cols, label= FALSE, label.size = 5, repel = TRUE)   + coord_fixed(ratio = 1) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL) + theme( plot.title = element_blank())
 dev.off()
-
-
-plt <- DimPlot(Seurat_obj, reduction = "umap", group.by = "mouseBatch", pt.size = 0.2, label= FALSE, label.size = 5, repel = TRUE)   + coord_fixed(ratio = 1) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL) + theme( plot.title = element_blank()) # legend.title = element_blank(), legend.position="none",
-plt
 
 
 pdf(paste0( Project, "_S4D__UMAP_ALL_", "mouseBatch", "_HARMONY_SCT_batch_regressed", "_with_legend", ".pdf"), onefile=FALSE, width=7, height=4) 
 par(bg=NA)
-plt
+DimPlot(Seurat_obj, reduction = "umap", group.by = "mouseBatch", pt.size = 0.2, label= FALSE, label.size = 5, repel = TRUE)   + coord_fixed(ratio = 1) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL) + theme( plot.title = element_blank())
 dev.off()
 
 
@@ -189,7 +193,7 @@ message("+                        Fig 1 D -  ANOVA for mtDNA transcripts        
 message("+-------------------------------------------------------------------------------")
 
 summary(df_mtDNA$percent.mt)
-df_mtDNA$celltype2 <- factor(df_mtDNA$celltype2, levels = c("amnion", "cardiac" , "endothelial" ,            "extraembryonic mesoderm", "forebrain" , "foregut", "mesoderm progenitors", "mid hindbrain",  "mid hindgut", "mixed mesoderm"  ,"neural crest", "neural tube", "notochord","pharyngeal mesoderm" , "placodes" ,"presomitic mesoderm" ,"somitic mesoderm" ))
+df_mtDNA$celltype2 <- factor(df_mtDNA$celltype2, levels = c("amnion", "cardiac" , "endothelial" , "extraembryonic mesoderm", "forebrain" , "foregut", "mesoderm progenitors", "mid hindbrain",  "mid hindgut", "mixed mesoderm"  ,"neural crest", "neural tube", "notochord","pharyngeal mesoderm" , "placodes" ,"presomitic mesoderm" ,"somitic mesoderm" ))
 
 
 test_t_1celltype_vs_all <- function(dataset, variable, celltype){
@@ -212,7 +216,6 @@ test_t_1celltype_vs_all <- function(dataset, variable, celltype){
 
 fig_1D_stats <- data.frame(celltype = c("amnion" ,"mesoderm progenitors" , "neural tube" , "mixed mesoderm" ,  "neural crest" , "mid hindbrain", "notochord" , "placodes", "presomitic mesoderm",     "forebrain" ,"pharyngeal mesoderm", "foregut", "extraembryonic mesoderm", "cardiac" ,"somitic mesoderm" , "endothelial" , "mid hindgut" ))
 fig_1D_stats$t_test_p.value <- ""
-#celltype_cols
 fig_1D_stats[1,2] <- test_t_1celltype_vs_all(dataset = df_mtDNA, variable = "percent.mt", celltype= "amnion")
 fig_1D_stats[2,2] <- test_t_1celltype_vs_all(dataset = df_mtDNA, variable = "percent.mt", celltype= "mesoderm progenitors")
 fig_1D_stats[3,2] <- test_t_1celltype_vs_all(dataset = df_mtDNA, variable = "percent.mt", celltype= "neural tube")
@@ -286,7 +289,6 @@ message("+----------------------------------------------------------------------
 
 Markers <- read.csv( "Input/MBU_spb54_005__Seurat_obj_WT__all_markers_celltype_padj0.05.csv")
 
-
 metadata_WT <- Seurat_obj_WT@meta.data
 metadata_WT$cell <- rownames(metadata_WT)
 
@@ -323,7 +325,7 @@ vln1 <- ggplot(expr_mat_scaled_Vln_molten, aes(x=cell_type, y=value, fill = fill
 vln1
 
 #pdf(paste0( Project, "_E__violin_WT_", "celltype", "_HARMONY_SCT_batch_regressed", "_v3", ".pdf"), onefile=FALSE, width=4.5, height=5) 
-par(bg=NA)
+#par(bg=NA)
 vln1
 #dev.off()
 
@@ -335,7 +337,7 @@ vln1 <- ggplot(expr_mat_scaled_Vln_molten, aes(x=cell_type, y=value)) +
   theme( axis.text.y=element_blank(), axis.ticks.y=element_blank()) + 
   scale_fill_brewer(palette = "Set1") +
   facet_wrap(~gene, ncol = 1, strip.position = "left", scales = "fixed") + 
-  theme(strip.text.y.left = element_text(angle = 0), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_blank() ) #, panel.border = element_rect(colour = "black", fill=NA, size=1))
+  theme(strip.text.y.left = element_text(angle = 0), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), strip.background = element_blank() ) 
 
 vln1
 
@@ -424,7 +426,6 @@ message("-----------------------------------------------------------------------
 message("+                Fig 1 F - Cox6a1, Cox6a2 Dotplot                             ")
 message("+-------------------------------------------------------------------------------")
 
-
 selected_genes <- c( "Cox6a1", "Cox6a2")
 
 expr_mat_scaled <- GetAssayData(Seurat_obj_WT, slot = "scale.data", assay = "SCT")
@@ -441,13 +442,6 @@ ddgram <- as.dendrogram(clust) # create dendrogram
 ggtree_plot <- ggtree::ggtree(ddgram, right = FALSE)
 ggtree_plot
 clust$labels[clust$order]
-
-Idents(Seurat_obj_WT) <- factor(Idents(Seurat_obj_WT), levels =  clust$labels[clust$order])
-dotplot <- DotPlot(Seurat_obj_WT, features = selected_genes, cols = c("white","darkred")) + 
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + labs(x = "", y = "")    + theme(axis.text.x=element_text( face = "italic"))
-#scale_color_gradientn(colours = viridis::viridis(20), limits = c(-1,2), oob = scales::squish, name = 'log2 (count + 1)')
-
-
 
 pdf(paste(Project, "DotPlot_WT", "Cox6a1_Cox6a2","with_dendro.pdf", sep="_"), width=6, height=5)
 par(bg=NA)

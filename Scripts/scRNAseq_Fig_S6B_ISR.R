@@ -3,6 +3,18 @@ rm(list=ls())
 gc()
 
 
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - Integrated Stress Response (ISR)                                       # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("ggplot2")
 library("ggrepel")
 library("cowplot")
@@ -16,16 +28,20 @@ library(SeuratDisk)
 library(enrichR)
 library(GO.db)
 library(org.Mm.eg.db)
+})
 
 
-
-Project        <- "MBU_spb54_005__CELL_REV_IntegratedStressResponse_"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005/"
-resDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005/CELL_REVISION_mouse_organogenesis"
+Project        <- "IntegratedStressResponse_"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx/" # replace with your path
+resDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(resDir)
 
 
 
+
+message("+-------------------------------------------------------------------------------")
+message("+             extract ISR genes and a few extra from publications               ")
+message("+-------------------------------------------------------------------------------")
 
 go_id = GOID( GOTERM[ Term(GOTERM) == "integrated stress response signaling"])
 allegs = get(go_id, org.Mm.egGO2ALLEGS)
@@ -201,12 +217,6 @@ names(Markers_celltype_genotype_list)[[19]]
 ISR_genes_list[[19]]
 
 
-
-
-
-
-Atf4_reg_genes <- c( "Nrf2", "Clock","Tfeb", "Tfe3", "Nupr1","Cebpg","Cep290","Cenpf","Fos","Ep300","Trib3","Egln3","Egln1")
-ISR_genes2 <- c(ISR_genes, Atf4_reg_genes )
 
 
 

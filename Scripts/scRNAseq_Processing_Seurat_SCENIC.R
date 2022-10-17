@@ -2,16 +2,29 @@
 rm(list=ls())
 gc()
 
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq processing in Seurat and SCENIC                                                        # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
 library("Seurat") 
 library("anndata")
 library("SCENIC")
 library("R2HTML")
 library("doMC")
 library("BiocParallel")
+})
 
 
 Project        <- "MBU_spb54_005__SCENIC"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/Projects/xxx/xxx" # replace with your path
 setwd(baseDir)
 
 
@@ -27,7 +40,7 @@ message("+----------------------------------------------------------------------
 message("+                    extract counts from h5ad files                             ")
 message("+-------------------------------------------------------------------------------")
 
-Counts_raw <- anndata::read_h5ad("Input/10xMutatorMiceE85_raw.h5ad")
+Counts_raw <- anndata::read_h5ad("Input/10xMutatorMiceE85_raw.h5ad") # replace with your path
 cell_info <- Counts_raw$obs
 Counts <- Counts_raw$X
 dim(Counts)
@@ -128,9 +141,6 @@ scenicOptions@settings$seed <- 123
 
 #saveRDS(scenicOptions, file=paste0("int/scenicOptions_SCT_batch_regr", Project ,".Rds") )
 
-exprMat  <- readRDS( "Input/MBU_spb54_005_Flo_SCENIC__SCT_counts.Rds")
-
-
 
 
 genesKept <- geneFiltering(as.matrix(exprMat), scenicOptions)
@@ -138,7 +148,7 @@ exprMat_filtered <- exprMat[genesKept, ]
 runCorrelation(as.matrix(exprMat_filtered), scenicOptions)
 exprMat_log <- log2(exprMat_filtered+1)
 
-# genie3 takes forever so do arboreto again!
+# genie3 takes forever so run arboreto instead.
 exportsForArboreto(as.matrix(exprMat_log), scenicOptions, dir = "int")
 
 
@@ -152,8 +162,8 @@ message("+----------------------------------------------------------------------
 
 RGN_linklist <- read.table("int/network_arboreto_numpy_output_SCT_NOT_REGRESSED.tsv", sep = "\t")
 colnames(RGN_linklist) <- c("TF", "Target", "weight")
-length(unique(RGN_linklist$TF))     #  1499
-length(unique(RGN_linklist$Target)) #  14496
+length(unique(RGN_linklist$TF))     
+length(unique(RGN_linklist$Target)) 
 
 corrMat <- readRDS("int/1.2_corrMat.Rds")
 dim(corrMat)

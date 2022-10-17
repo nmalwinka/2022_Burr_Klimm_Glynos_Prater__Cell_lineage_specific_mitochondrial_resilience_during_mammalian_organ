@@ -2,24 +2,37 @@
 rm(list=ls())
 gc()
 
-require("STRINGdb")
-require("igraph")
-require("biomaRt")
-library("rWikiPathways")
 
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - Gene networks                                                          # 
+#                                                                                                            #
+##############################################################################################################
+
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
+  library("STRINGdb")
+  library("igraph")
+  library("biomaRt")
+  library("rWikiPathways")
+})
 
 
 
 Project        <- "MBU_spb54_005__Enrichment_Network_Analysis"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
-SCENIC_Dir     <- paste0(baseDir,"/SCENIC_batch_regressed" )
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
+SCENIC_Dir     <- paste0(baseDir,"/SCENIC" ) # replace with your path
 setwd(baseDir)
 
 
 message("+-------------------------------------------------------------------------------")
 message("+                             load in data                                      ")
 message("+-------------------------------------------------------------------------------")
-
 
 Seurat_obj <- readRDS(paste0(baseDir, "/Input/MBU_spb54_005_Flo_SCENIC-_harmony_matrix.su_SCT_batch_regressed_.Rds"))
 scenicOptions <- readRDS(paste0(baseDir,"/SCENIC_batch_regressed/int/scenicOptions_SCT_batch_regrMBU_spb54_005_Flo_SCENIC.Rds"))

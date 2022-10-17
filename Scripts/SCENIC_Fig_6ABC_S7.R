@@ -2,20 +2,32 @@
 rm(list=ls())
 gc()
 
-library("SCENIC")
-library("ComplexHeatmap")
-library("Seurat") 
-library("grDevices")
-library("dichromat")
+
+##############################################################################################################
+#                                                                                                            #
+#   Project: MBU_spb54_005_MouseEmbryo                                                                       #
+#   Malwina Prater (mn367@cam.ac.uk), 2022                                                                   #
+#   MRC MBU, University of Cambridge                                                                         #
+#   Script: scRNA-seq mouse dataset - SCENIC analysis                                                        # 
+#                                                                                                            #
+##############################################################################################################
+
+
+message("+--- Loading in the libraries (start up messages supressed) ---+")
+suppressPackageStartupMessages({
+  library("SCENIC")
+  library("ComplexHeatmap")
+  library("Seurat") 
+  library("grDevices")
+  library("dichromat")
+})
 
 
 Project        <- "MBU_spb54_005__SCENIC"
-baseDir        <- "/Users/mn367/Documents/MBU-Projects/MBU_Stephen_Burr/MBU_spb54_005"
+baseDir        <- "/Users/xxx/Documents/xxx/xxx/xxx" # replace with your path
 setwd(baseDir)
-dbDir         <- "/Users/mn367/Documents/MBU-Projects/Databases/Mouse_cisTarget_databases"
-list.files(dbDir)
 
-SCENIC_Dir <- paste0(baseDir,"/SCENIC_batch_regressed" )
+SCENIC_Dir <- paste0(baseDir,"/SCENIC" ) # replace with your path
 setwd(SCENIC_Dir)
 
 
@@ -40,13 +52,7 @@ MakeCustomFeaturePlot <- function(regulon2plot, outdir, colorRampBIAS = 1){
   regulon_name <- print(regulon2plot)
   matrix.umap$selected_gene <- AUC_data2[,regulon2plot]
   matrix.umap$selected_gene <- as.numeric(as.character(matrix.umap$selected_gene))
-  print(head(matrix.umap, 2))
-  
-  #myPalette <- colorRampPalette((brewer.pal(9, "YlGnBu")), bias = colorRampBIAS)
-  ####myPalette <- colorRampPalette(colorschemes$GreentoMagenta.16, bias = colorRampBIAS)   
-  #sc <- scale_colour_gradientn(colours = myPalette(100) , limits=c(min(matrix.umap$selected_gene), max(matrix.umap$selected_gene))) 
-  ####sc <- scale_color_viridis(option = "D", direction = -1) # c= plasma, d= viridis
-  
+
   myPalette <- colorRampPalette(colorschemes$GreentoMagenta.16, bias = colorRampBIAS)  
   myPalette <-  myPalette(100)
   myPalette <- myPalette[!myPalette %in% c("#FFFDFF" ,"#FFFBFF","#FCFFFC","#FFF9FF")]
@@ -73,9 +79,6 @@ MakeCustomFeaturePlot <- function(regulon2plot, outdir, colorRampBIAS = 1){
 }
 
 
-
-#max(matrix.umap$UMAP_1) - min(matrix.umap$UMAP_1)
-#max(matrix.umap$UMAP_2) - min(matrix.umap$UMAP_2)
 
 MakeCustomFeaturePlotWithZoom <- function(regulon2plot, colorRampBIAS = 1, zoom_celltype = NULL, zoom_level = 2, color_scheme = "A"){
   regulon_name <- print(regulon2plot)
@@ -108,7 +111,6 @@ MakeCustomFeaturePlotWithZoom <- function(regulon2plot, colorRampBIAS = 1, zoom_
     geom_point( aes(colour=selected_gene), alpha=0.6, size=1) +
     sc + xlab("") + ylab("") +  
     coord_fixed(ratio = 1, xlim= c(-13, 15), ylim = c(-16, 12) ) + 
-    #scale_y_continuous(breaks=c(-10,0,10)) + scale_x_continuous(breaks=c(-10,0,10))+
     theme_cowplot(12)  + xlab("UMAP_1") + ylab("UMAP_2") +
     geom_rect( mapping=aes(xmin=umap1_ylimits[1], xmax=umap1_ylimits[2], ymin=umap2_ylimits[1], ymax=umap2_ylimits[2]), color="grey35", alpha=0, size = 0.2) + scale_y_continuous(breaks=NULL) + scale_x_continuous(breaks=NULL)+ 
     theme(legend.position = c(0.03, 0.18)) + labs(color= paste0(regulon_name, " activity")) 
@@ -116,7 +118,6 @@ MakeCustomFeaturePlotWithZoom <- function(regulon2plot, colorRampBIAS = 1, zoom_
   umap.gene_all    <- ggplot(matrix.umap, aes(x=UMAP_1, y=UMAP_2)) +
     geom_point( aes(colour=selected_gene), alpha=0.6, size=1) +
     sc + xlab("") + ylab("") +  
-    #coord_fixed(ratio = 1, xlim= c(-13, 15), ylim = c(-16, 12) ) + 
     scale_y_continuous(breaks=c(-10,0,10)) + scale_x_continuous(breaks=c(-10,0,10))+
     theme_cowplot(12)  +
     theme(title=element_text(size=16), 
@@ -204,9 +205,6 @@ MakeCustomFeaturePlotWithZoom("Sox10", zoom_celltype = "neuralCrest", color_sche
 
 
 
-
-
-
 message("+-------------------------------------------------------------------------------")
 message("+                             load SCENIC                                       ")
 message("+-------------------------------------------------------------------------------")
@@ -281,9 +279,6 @@ colnames(regulonActivity_byCellType_Scaled2) <- gsub( "Tube", " tube", colnames(
 colnames(regulonActivity_byCellType_Scaled2) <- gsub( "C5024T", "m.5024C>T", colnames(regulonActivity_byCellType_Scaled2))
 colnames(regulonActivity_byCellType_Scaled2) <- gsub( "A5019G", "m.5019A>G", colnames(regulonActivity_byCellType_Scaled2))
 
-#rownames(regulonActivity_byCellType_Scaled2) <- gsub( " \\(.*", "", rownames(regulonActivity_byCellType_Scaled2))
-#rownames(regulonActivity_byCellType_Scaled2) <- gsub( "_extended", "", rownames(regulonActivity_byCellType_Scaled2))
-
 col_split <- gsub( " WT", "", colnames(regulonActivity_byCellType_Scaled2))
 col_split <- gsub( " m.5024C>T", "", col_split)
 col_split <- gsub( " m.5019A>G", "", col_split)
@@ -293,8 +288,7 @@ ha = columnAnnotation(CellType = col_split, col = list(CellType = celltype_cols)
 df <- as.data.frame(regulonActivity_byCellType_Scaled2)
 colnames(df) <- gsub( ".* ", "", colnames(df))
 
-f2 = circlize::colorRamp2( c(-2, 0, 2.5), c("blue", "white","red"), space = "RGB") #  colorRampPalette(c("blue","white","red"))(100)
-
+f2 = circlize::colorRamp2( c(-2, 0, 2.5), c("blue", "white","red"), space = "RGB")
 ht2 <- ComplexHeatmap::Heatmap(df, name="Scaled \nregulon \nactivity", col = f2, clustering_distance_rows = "euclidean", clustering_distance_columns = "euclidean", cluster_columns = F, show_row_names = TRUE, width  = unit(ncol(df)/2, "cm"),height  = unit(nrow(df)/2, "cm"), top_annotation = ha)
 ht2
 
@@ -321,7 +315,7 @@ ha = columnAnnotation(CellType = col_split_df$celltype, Genotype = col_split_df$
 df_xx <- as.data.frame(df_x)
 colnames(df_xx) <- col_split_df$celltype
 
-f2 = circlize::colorRamp2( c(-2, 0, 2.5), c("blue", "white","red"), space = "RGB") #  colorRampPalette(c("blue","white","red"))(100)
+f2 = circlize::colorRamp2( c(-2, 0, 2.5), c("blue", "white","red"), space = "RGB") 
 
 ht2 <- ComplexHeatmap::Heatmap(df_xx, name="Scaled \nregulon \nactivity", col = f2, clustering_distance_rows = "euclidean", clustering_distance_columns = "euclidean", cluster_columns = F, show_column_names = T, show_row_names = TRUE, width  = unit(ncol(df)/3.3, "cm"),height  = unit(nrow(df)/2, "cm"), top_annotation = ha)
 ht2
