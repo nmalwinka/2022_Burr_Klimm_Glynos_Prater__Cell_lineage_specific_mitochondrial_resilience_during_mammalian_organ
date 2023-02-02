@@ -110,8 +110,10 @@ QC of the sequencing was assessed using FastQC (v0.11.9), fastq_screen (v0.14.1)
 
 
 ### Bulk RNAseq analysis
+
 Counts extracted with STAR were used to perform differential gene analysis in R (version 4.2.1) using package DESeq2 (v.1.36.0). Since the samples were sequenced in pool on 2 separate lanes, counts were combined using DESeq2 function "collapseReplicates". Genes with no expression were filtered out. Read counts were normalised on estimated size factors. Fold changes were calculated with function lfcShrink using estimator "ashr". Principal component analysis (PCA) was performed on rlog-transformed count data for all genes. GO enrichment analysis was performed using enrichR package (v.3.1) and Kegg pathway analysis using clusterProfiler (v.4.4.4), on DEGs with absolute log2 fold change >1 and adjusted P value <0.05.
 
+The RNA-seq data was deposited in GEO dataset under accession number: `GSE214740`.
 
 ### Proliferation assays
 
