@@ -48,6 +48,8 @@ Raw FASTQ files from 10x sequencing were demultiplexed and aligned in a two-pass
 | ---- | ---- |---- | ---- |---- |  
 | 2174	| 2456	| 2750 |	1649	|  1991 |
 
+Data was deposited in GEO datasets under accession number: `GSE200746`.
+
 
 ### Clustering and cell-type annotation of the scRNA-seq
 
